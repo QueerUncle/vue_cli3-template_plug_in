@@ -7,7 +7,7 @@
 
   <div class = "Excel_Export" style="overflow: hidden;height: 100%;">
 
-    <img style="height: 100%;width: 100%;cursor: pointer" v-if="ExportImgUrlFn!=''" :src="ExportImgUrlFn" accept=".csv, application/vnd.ms-excel, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet">
+    <img style="height: 100%;width: 100%;cursor: pointer" v-if="ExportImgUrlFn!=''" :src="ExportImgUrlFn">
 
     <Button style="width: 100%;height: 100%;" v-else >导出</Button>
 

@@ -51,9 +51,9 @@
 
         <thead>
 
-        <tr v-for="(item,index) in ExceldataFn.tHead">
+        <tr v-if="index!=0" v-for="(item,index) in ExceldataFn.tHead">
 
-          <th v-for="(key,value) in item">{{key}}</th>
+          <th v-for="(key,value) in item" v-html="key"></th>
 
         </tr>
 

@@ -18,6 +18,26 @@ const fs = {
     //处理头部
     for(let i in newhead[0]){
 
+      if(newhead[0][i].indexOf("（") >-1){
+
+        var bef = newhead[0][i].substring(0,newhead[0][i].indexOf("（"));
+
+        var aft = newhead[0][i].substring(newhead[0][i].indexOf("（"),newhead[0][i].length);
+
+        newhead[0][i] = "<font color = 'red'>"+bef + "</font><br/>"+aft;
+
+        if(newhead[0][i].indexOf("(") >-1){
+
+          var bef = newhead[0][i].substring(0,newhead[0][i].indexOf("("));
+
+          var aft = newhead[0][i].substring(newhead[0][i].indexOf("("),newhead[0][i].length);
+
+          newhead[0][i] = "<font color = 'red'>"+bef + "</font><br/>"+aft;
+
+        }
+
+      }
+
       if(!Regular.isChinese(i)){
 
         console.log(i);
