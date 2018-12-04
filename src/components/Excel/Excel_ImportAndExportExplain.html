@@ -1,0 +1,133 @@
+<!--
+ -  2018/11/21  lize
+ -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Excel_ImportAndExportExplain</title>
+
+  <style>
+    html,body{
+      margin: 0;
+      padding: 0;
+    }
+    pre{
+      width: 1300px;
+      margin: 0 auto;
+      background: #111111;
+      color: #9cb945;
+      font-size: 20px;
+      padding: 0 50px;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+    }
+  </style>
+</head>
+<body>
+  <pre>
+
+    <h1 style="text-align: center">Excel_ImportAndExport--------使用简述</h1>
+
+    <h5>准备阶段</h5>
+
+    1、在项目根目录下  输入  cnpm install xlsx --save-dev 和 cnpm install iview --save-dev（如果下载过就不用下载了）。
+
+          安装项目中所依赖的插件xlsx和iview。
+
+    2、在项目中找个位置把Excel文件夹拷贝进去，例如：我放在vue_cli3_template>src>components>CbimPlayerExcel
+
+    3、在自己的组件内import引入Excel>ExcelImport.vue,并进行注册。 ---------导入操作
+
+    4、在自己的组件内import引入Excel>ExcelExport.vue,并进行注册。 ---------导出操作
+
+    <h5>参数配置</h5>
+
+        导入：
+
+            excelRegDataAry：（Array）[
+
+
+                {
+
+                    index:0  (int),  //需要检验的列下表（从0开始计算）
+
+                    //需要检验的函数名称数组(详情请看Regular_Tmplate.js,此名称需要和Regular_Tmplate.js中的函数名字相同)。
+
+                    reg:(Arrar)[
+
+                        {
+
+                            name:'len10' //Regular_Tmplate.js中的函数名
+
+                        }
+
+                    ]
+
+                },
+
+                .........
+
+            ]
+
+            succColor:"#000000" (String)   //默认为#000000
+
+            errColor:"#000000" (String)    //默认 red
+
+            ImportImgUrl:(String)     //导入按钮的背景图。（页面引入时，需外层包裹div,如外层没有div,默认显示Button标签）
+
+
+      导出：
+
+
+            ExportImgUrl:(String)非必填   //导出按钮的背景图。（页面引入时，需外层包裹div,如外层没有div,默认显示Button标签）,
+
+            ExportType:(String)非必填     //导出文件的格式，默认文件格式为xlsx,
+
+            ExportFileName:(String)非必填  //导出文件名称,例如（download.xlsx）,默认download.xlsx
+
+
+    <h5>事件</h5>
+
+          导入：
+
+
+              on-clear-click     //用户点击取消或关闭按钮时触发,返回true。
+
+
+              on-seve-click     //用户点击确定按钮时触发,返回Array。
+
+
+    <h5>方法</h5>
+
+          导出：
+
+              ExportFile（传入需要下载的数据）
+
+                数据格式：
+
+                  ExcelExportData：{
+
+                     bodyData:[], //必传
+
+                     headData:"", //必传
+
+                     fileSuffix："",
+
+                     fileType:"",
+
+                     fileSize:"",
+
+                  }
+
+
+
+
+
+
+
+  </pre>
+
+</body>
+
+</html>

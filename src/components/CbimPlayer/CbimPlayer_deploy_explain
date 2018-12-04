@@ -1,0 +1,72 @@
+
+/*
+ * 2018/11/19  lize
+ */
+
+// this.TcPlayer = new TcPlayer('id_test_video', {
+          //
+          //   "m3u8": "//1256993030.vod2.myqcloud.com/d520582dvodtransgzp1256993030/7732bd367447398157015849771/v.f40.mp4", //请替换成实际可用的播放地址
+          //
+          //   "m3u8_hd": "//1256993030.vod2.myqcloud.com/d520582dvodtransgzp1256993030/7732bd367447398157015849771/v.f30.mp4",  //高清
+          //
+          //   "m3u8_sd": "//1256993030.vod2.myqcloud.com/d520582dvodtransgzp1256993030/7732bd367447398157015849771/v.f20.mp4",  //标清
+          //
+          //   "autoplay": true,      //iOS下safari浏览器，以及大部分移动端浏览器是不开放视频自动播放这个能力的
+          //
+          //   "coverpic": {     封面文件
+          //
+          //     "src": "https://test-tools.cbim.org.cn/api/download/v1/download?fileId=group1/M00/00/43/rBNM4VvykUKAIFUaAAAi5sWDNXU257.jpg",
+          //
+          //     "style": "cover"    style 可选属性：default 居中 1：1 显示; stretch 拉伸铺满播放器区域，图片可能会变形; cover 优先横向等比拉伸铺满播放器区域，图片某些部分可能无法显示在区域内
+          //
+          //   },
+          //
+          //   "width": '100%',//视频的显示宽度，请尽量使用视频分辨率宽度
+          //
+          //   "height": '100%',//视频的显示高度，请尽量使用视频分辨率高度，
+          //
+          //   "wording": {    自定义文案
+          //
+          //     2032: "请求视频失败，请检查网络",
+          //
+          //     2048: "请求m3u8文件失败，可能是网络错误或者跨域问题"
+          //
+          //   },
+          //
+          //   "clarity": "od",   默认播放清晰度  "od"、"hd"、"sd"
+          ////
+          // "controls":"default",      default 显示默认控件，none 不显示控件，system 移动端显示系统控件 *备注：如果需要在移动端使用系统全屏，就需要设置为 system。
+          //
+          //   listener(e){     事件监听回调函数，回调函数将传入一个 JSON 格式的对象
+          //
+          //     console.log(e);
+          //
+          //     if(e.type == 'pause'){
+          //
+          //       _this.getTime();
+          //
+          //     }else if(e.type == "load"){
+          //
+          //       _this.getduration();
+          //
+          //     }
+          //
+          //   }
+          //
+          // })
+
+          //Methods
+
+          // getCurrentTime()  获取视频播放时间
+
+          //setCurrentTime()   设置视频播放时间
+
+          //getVolume()  获取视频音量
+
+          //setVolume() 设置视频音量
+
+          //getDuration()  获取视频时间总长
+
+          //destroy()   销毁实例
+
+

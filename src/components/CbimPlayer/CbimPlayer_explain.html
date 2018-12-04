@@ -1,0 +1,121 @@
+<!--
+ -  2018/11/21  lize
+ -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>CbimPlayer_explain</title>
+
+  <style>
+    html,body{
+      margin: 0;
+      padding: 0;
+    }
+    pre{
+      width: 1300px;
+      margin: 0 auto;
+      background: #111111;
+      color: #9cb945;
+      font-size: 20px;
+      padding: 0 50px;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+    }
+  </style>
+</head>
+<body>
+  <pre>
+
+    <h1 style="text-align: center">CbimPlayer--------使用简述</h1>
+
+    <h5>准备阶段</h5>
+
+    1、在项目根目录下  输入  cnpm install tcplayer --save-dev（如果下载过就不用下载了）。
+
+    2、在项目中找个位置把CbimPlayer文件夹拷贝进去，例如：我放在vue_cli3_template>src>components>CbimPlayer
+
+    3、在自己的组件内import引入CbimPlayer>index.vue,并进行注册。
+
+    <h5>参数配置</h5>
+
+      videoData : 初始化CbimPlayer所需参数，Object类型。videoData里面包括的字段分别是：
+
+          coverpic ：Object类型,这个参数是关于是是视频封面图片的配置。（非必传）其中有俩个字段。分别是：
+
+                    src： String类型，封面图片地址，默认会有一个系统内置的封面图片地址。
+
+                    style  String类型，封面图片的样式，有三个参数可选。默认样式为 cover。
+
+                          default 居中 1：1 显示;
+
+                          stretch 拉伸铺满播放器区域，图片可能会变形;
+
+                          cover 优先横向等比拉伸铺满播放器区域，图片某些部分可能无法显示在区域内
+
+          controls：String类型，这个参数是设置是否显示操作空间，该值有三个参数可选。默认 default。
+
+                     default 显示默认控件。
+
+                     none 不显示控件。
+
+                     system 移动端显示系统控件 *备注：如果需要在移动端使用系统全屏，就需要设置为 system。
+
+          vodeoUrl：String类型（必传），需要播放视频的url。
+
+          pauseMetodName：String类型，暂停视频时的监听事件的方法名称，默认事件名称为 on-pause。该方法会返回视频暂停时的播放时间。
+
+          idName:String类型，（选填）CbimPlayer渲染的div容器的id。一个组件需要多个CbimPlayer实例时，需要每个初始化参数的idName具
+
+                 有唯一性。
+
+                 如果不传系统默认会生成一个CbimPlay+时间戳的idName（此处建议填写，因为后续可以根据自己定义的id来做一些符合自己
+
+                 额外需求的处理）。
+
+    <h5>方法</h5>
+
+          调取方法前,需要在自己组件内,给CbimPlayer组件起一个ref。例如ref = "CbimPlayer"。调用方法时,this.$refs.CbimPlayer.方法名。
+
+            方法名           参数                        说明                                         返回值
+
+          getCurrentTime    无                     获取当前播放时间                        返回当前的播放时间。int类型，以秒为单
+
+          setCurrentTime    int类型                设置视频播放时间点                      无
+
+          getVolume         无                     获取当前播放器音量                      返回当前播放器音量，int类型
+
+          setVolume         int类型，范围0-1       设置播放器音量                          无
+
+          destroyFn         无                     销毁当前实例                            无
+
+          play              无                     播放视频                                无
+
+          pause             无                     暂停视频                                无
+
+          playing           无                     检查播放器是否正在播放中                 返回当前播放器的状态，Boolean类型
+
+          mute              可选，Boolean类型      切换静音状态，不传参则返回当前是否静音     Boolean类型
+
+          fullscreen        可选，Boolean类型      切换全屏状态，不传参则返回当前是否全屏     Boolean类型
+
+          getBuffered       无                     获取当前缓冲数据百分比                    返回当前缓冲数据百分比
+
+          loadVideo         String类型             通过视频地址加载视频                      无
+
+
+
+
+
+
+
+
+
+
+
+
+  </pre>
+
+</body>
+
+</html>
