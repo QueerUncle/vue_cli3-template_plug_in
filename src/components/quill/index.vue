@@ -33,28 +33,28 @@
       <p style="padding-left: 10px;">还可以输入{{tipNum}}个字</p>
 
     </div>
-    <button @click = "getRichTextContent">获取内容HTML</button>
-    <button @click = "setContents">设置内容HTML</button>
-    <button @click = "getRichTextTxt">获取内容TEXT</button>
-    <button @click = "setText">设置内容TEXT</button>
-    <button @click = "setOnBlur">失去焦点</button>
-    <button @click = "setOnFocus">获得焦点</button>
-    <button @click = "clearRichText">清空文本</button>
-    <button @click = "getnowLength">获取文本长度</button>
-    <button @click = "setRichTextdisabled">设置不可用</button>
-    <button @click = "setsetRichTextcontainer">是否隐藏工具栏</button>
-    <button @click = "getRichTxtContentAry">获取文本数组</button>
-    <button @click = "getSelection">获取用户选中的鼠标位置</button>
-    <button @click = "setSelection">设置鼠标选中的位置</button>
-    <button @click = "hasFocus">检查编辑器是否具有焦点</button>
-    <button @click = "getBounds">检索给定位置处的像素位置</button>
-    <button @click = "format">格式化当前用户选中文本的格式</button>
-    <button @click = "formatText">设置给定出所含文本的格式</button>
-    <button @click = "getFormat">检索给定范围内文本的常见格式</button>
-    <button @click = "removeFormat">删除给定范围内的所有格式和嵌入</button>
-    <button @click = "getModule">获取模块</button>
-    <button @click = "FindQuillTmplate">寻找编辑器中模板</button>
-    <button @click = "insertText">向编辑器内插入文本</button>
+    <!--<button @click = "getRichTextContent">获取内容HTML</button>-->
+    <!--<button @click = "setContents">设置内容HTML</button>-->
+    <!--<button @click = "getRichTextTxt">获取内容TEXT</button>-->
+    <!--<button @click = "setText">设置内容TEXT</button>-->
+    <!--<button @click = "setOnBlur">失去焦点</button>-->
+    <!--<button @click = "setOnFocus">获得焦点</button>-->
+    <!--<button @click = "clearRichText">清空文本</button>-->
+    <!--<button @click = "getnowLength">获取文本长度</button>-->
+    <!--<button @click = "setRichTextdisabled">设置不可用</button>-->
+    <!--<button @click = "setsetRichTextcontainer">是否隐藏工具栏</button>-->
+    <!--<button @click = "getRichTxtContentAry">获取文本数组</button>-->
+    <!--<button @click = "getSelection">获取用户选中的鼠标位置</button>-->
+    <!--<button @click = "setSelection">设置鼠标选中的位置</button>-->
+    <!--<button @click = "hasFocus">检查编辑器是否具有焦点</button>-->
+    <!--<button @click = "getBounds">检索给定位置处的像素位置</button>-->
+    <!--<button @click = "format">格式化当前用户选中文本的格式</button>-->
+    <!--<button @click = "formatText">设置给定出所含文本的格式</button>-->
+    <!--<button @click = "getFormat">检索给定范围内文本的常见格式</button>-->
+    <!--<button @click = "removeFormat">删除给定范围内的所有格式和嵌入</button>-->
+    <!--<button @click = "getModule">获取模块</button>-->
+    <!--<button @click = "FindQuillTmplate">寻找编辑器中模板</button>-->
+    <!--<button @click = "insertText">向编辑器内插入文本</button>-->
     <div class = "Quill_mask" v-if="imgClickFlag">
 
       <img :src="clickImgSrc" alt="">
@@ -393,9 +393,19 @@
         //获取富文本内容HTML
         getRichTextContent(){
 
-          console.log(this.content)
+          let exportHtml = this.content;
 
-          return this.content;
+          document.querySelectorAll("P").forEach((i,v) =>{
+
+            if(i.innerText.indexOf("<"+"script"+">")>=0 || i.innerText.indexOf("</"+"script"+">")>=0 || i.innerText.indexOf("function")>=0){
+
+              exportHtml = false;
+
+            }
+
+          })
+
+          return exportHtml;
 
         },
         //设置HTML内容
@@ -572,8 +582,6 @@
         disposeIMGMethod(){
 
           let Img_Node = document.querySelectorAll("img")
-
-          console.log(Img_Node);
 
           Img_Node.forEach((i,v) =>{
 

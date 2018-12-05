@@ -28,7 +28,7 @@
       <quill
         :masg = "masgs"
         :incident = incident
-        :MaxWords = 10
+        :MaxWords = 100
         :toolbar = false
         ref = "quill"
         @on-blur = "onEditorBlur"
@@ -110,7 +110,7 @@
           //内容发生变化
           onEditorChange(e){
 
-            console.log(e)
+            // console.log(e)
 
           },
           //readr
@@ -122,7 +122,15 @@
           //获取内容
           getContent(){
 
-            console.log(this.$refs.quill.getRichTextContent())
+            if(this.$refs.quill.getRichTextContent() == false){
+
+              alert("文本框包含javascript函数内容及标签，请自行清除！")
+
+            }else{
+
+              console.log(this.$refs.quill.getRichTextContent())
+
+            }
 
           },
           //获取长度
