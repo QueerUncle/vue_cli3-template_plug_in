@@ -17,13 +17,45 @@
 
     width = "1000">
 
+    <!--<div class = "table">-->
+
+      <!--<div class = "t_head">-->
+
+        <!--<div v-for="(item,index) in ExceldataFn.tHead" style="">-->
+
+          <!--<ul v-for="(key,value) in item">-->
+
+            <!--<li>{{key}}</li>-->
+
+          <!--</ul>-->
+
+        <!--</div>-->
+
+      <!--</div>-->
+
+      <!--<div class = "t_body" >-->
+
+        <!--<div v-for="(item,index) in ExceldataFn.tBody" style="">-->
+
+          <!--<ul v-for="(i,indexs) in item">-->
+
+            <!--<li :style = "{color:i.color}" contentEditable = "plaintext-only" @blur = onBlur(i,$event)>{{i.name}}</li>-->
+
+          <!--</ul>-->
+
+        <!--</div>-->
+
+      <!--</div>-->
+
+    <!--</div>-->
+
     <div class = "table-cont" id = table-cont>
 
       <table cellspacing="0" cellpadding="0" border="0" class = "table" width="100%">
 
         <thead>
 
-        <tr v-if="index!=0 && ExcelPopData.tHead"  v-for="(item,index) in ExcelPopData.tHead">
+        <tr v-if="index!=0"  v-for="(item,index) in ExceldataFn.tHead">
 
           <th v-for="(key,value) in item" v-html="key"></th>
 
@@ -33,7 +65,7 @@
 
         <tbody>
 
-        <tr v-if="ExcelPopData.tBody" v-for="(item,index) in ExcelPopData.tBody">
+        <tr v-for="(item,index) in ExceldataFn.tBody">
 
           <td title = "点击修改" :style = "{color:i.color}" contentEditable = "plaintext-only" @focus = "onFocus($event)"  @blur = onBlur(i,$event) v-for="(i,indexs) in item">{{i.name}}</td>
 
@@ -42,16 +74,6 @@
         </tbody>
 
       </table>
-
-    </div>
-
-    <div v-if="SheetsAryFn.length>1" class = "labelDiv" style="overflow: hidden">
-
-      <ul style="overflow: hidden">
-
-        <li @click = "selectLabel(index)" :class="{active:index == active}"  v-for="(i,index) in SheetsAryFn">{{i.sheet}}</li>
-
-      </ul>
 
     </div>
 
@@ -79,26 +101,16 @@
 
               ExcelPop:false,
 
-              ExcelPopData:{
-
-                tHead:[],
-
-                tBody:[],
-
-              },
-
-              propsExcelData:[],
+              Exceldata:[],
 
               SuccColor:"#000000",
 
-              ErrColor:"red",
-
-              active:0
+              ErrColor:"red"
 
             }
 
         },
-        props:['ExcelPopFlag','ExcelData','SuccessColor','ErrorColor','ExcelRegulation','SheetsAry'],
+        props:['ExcelPopFlag','ExcelData','SuccessColor','ErrorColor','ExcelRegulation'],
         watch:{
 
           'ExcelPopFlag'(n){
@@ -108,9 +120,7 @@
           },
           'ExcelData'(n){
 
-            this.propsExcelData = n;
-
-            this.ExcelPopData = n[this.active];
+            this.Exceldata = n;
 
           },
           'SuccessColor'(){
@@ -134,18 +144,14 @@
         },
         computed:{
 
-          SheetsAryFn(){
+          ExceldataFn(){
 
-            return this.$props.SheetsAry;
+            return this.$props.ExcelData;
 
           }
 
         },
         mounted() {
-
-          this.propsExcelData = this.$props.ExcelData
-
-          this.ExcelPopData = this.propsExcelData[this.active];
 
           this.ExcelPop = this.$props.ExcelPopFlag;
 
@@ -213,9 +219,7 @@
 
               col:item.col,
 
-              row:item.row,
-
-              sheet:item.sheet,
+              row:item.row
 
             }
 
@@ -247,17 +251,7 @@
 
             // #f8f8f9
 
-          },
-
-          //切换标签
-          selectLabel(index){
-
-            this.active = index;
-
-            this.ExcelPopData = this.propsExcelData[index]
-
           }
-
         }
 
     }
@@ -367,71 +361,6 @@
 
     /*border: 1px solid #ddd;*/
     border: 1px solid #e8eaec;
-
-  }
-  .labelDiv{
-
-    margin: 0 10px;
-
-    ul{
-
-      width:100%;
-
-      border-bottom:1px solid #dcdee2;
-
-      li{
-
-        height:30px;
-
-        line-height: 30px;
-
-        width: 60px;
-
-        text-align: center;
-
-        border: 1px solid #dcdee2;
-
-        float: left;
-
-        border-top:none ;
-
-        border-right:none ;
-
-        background:#f8f8f9;
-
-        margin-left: 1px;
-
-        border-radius: 4px 4px 0 0;
-
-        cursor:pointer;
-
-        &:nth-child(0){
-
-           margin-left:0;
-
-        };
-        &:nth-last-child(1){
-
-           border-right: 1px solid #dcdee2
-
-        };
-
-        &:hover{
-
-          color:#2d8cf0;
-
-        }
-
-      }
-
-    }
-
-  }
-  .active{
-
-    color:#2d8cf0 !important;
-
-    background:#fff !important;
 
   }
 </style>

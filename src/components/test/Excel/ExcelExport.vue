@@ -11,26 +11,13 @@
 
     <Button style="width: 100%;height: 100%;" v-else >导出</Button>
 
-    <excel-export-pop
-
-      @cloce = "cloce"
-
-      v-if="ExcelData!=null"
-
-      :SheetsAry = SheetsAry
-
-      :ExcelPopFlag = ExcelPopFlag
-
-      :ExcelData = ExcelData>
-
-    </excel-export-pop>
+    <excel-export-pop @cloce = "cloce" v-if="ExcelData!=null" :ExcelPopFlag = ExcelPopFlag :ExcelData = ExcelData></excel-export-pop>
 
   </div>
 
 </template>
 
 <script>
-
   import XLSX from 'xlsx'
 
   import ExcelExportPop from './Pop/Excel_Export_Pop'
@@ -45,7 +32,7 @@
 
               ExcelData:null,
 
-              ExportData:[],
+              ExportData:null,
 
               fileName:"dowload.xlsx",
 
@@ -55,9 +42,7 @@
 
               fileType:null,
 
-              ExportTypeS:'xlsx',
-
-              SheetsAry:[],
+              ExportTypeS:'xlsx'
 
             }
         },
@@ -116,161 +101,135 @@
           }
 
         },
-        mounted() {},
+        mounted() {
+
+        },
 
         methods: {
           //点击导出按钮
-          ExportFile(ArrayData){
+          ExportFile(data){
 
-            let flag = false;
+            console.log(data);
 
-            if(ArrayData && ArrayData.length>0){
+            this.ExportData = data;
 
-              for(let sheet = 0; sheet <ArrayData.length; sheet++){
+            if(this.ExportData==undefined || this.ExportData == null){
 
-                  if(ArrayData[sheet].headData && ArrayData[sheet].headData.length>0){
-
-                    if(ArrayData[sheet].bodyData && ArrayData[sheet].bodyData.length>0){
-
-                      flag = true;
-
-                    }else{
-
-                      flag = false;
-
-                      return
-
-                    }
-
-                  }else{
-
-                    flag = false;
-
-                    return
-
-                  }
-
-                  if(ArrayData[sheet].fileSuffix){
-
-                    this.fileSuffix = ArrayData[sheet].fileSuffix;
-
-                  }
-
-                  if(ArrayData[sheet].fileSize){
-
-                    this.fileSize = ArrayData[sheet].fileSize;
-
-                  }
-
-                  if(ArrayData[sheet].fileType){
-
-                    this.fileType =  ArrayData[sheet].fileType
-
-                  }
-
-              }
-
-            }else{
-
-              flag = false;
+              this.$Message.error("数据错误,请联系管理员");
 
               return
 
-            }
+            }else{
 
-            if(flag){
+              if(this.ExportData.headData == undefined || this.ExportData.headData == null){
 
-              this.ExportData = ArrayData;
+                this.$Message.error("数据错误,请联系管理员");
 
-              this.ExcelData = this.disposeData(this.ExportData);
-
-              if(this.ExcelData!==null){
-
-                this.ExcelPopFlag = true;
+                return
 
               }else{
 
-                this.$Message.error("数据格式错误,解析失败,请检查Excel数据");
+                if(this.ExportData.bodyData == undefined || this.ExportData.bodyData == null){
+
+                  this.$Message.error("数据错误,请联系管理员");
+
+                  return
+
+                }else{
+
+                  if(this.ExportData.fileSuffix!=undefined && this.ExportData.fileSuffix!=null){
+
+                    this.fileSuffix = this.ExportData.fileSuffix;
+
+                  }
+
+                  if(this.ExportData.fileSize!==undefined && this.ExportData.fileSize!=null){
+
+                    this.fileSize = this.ExportData.fileSize;
+
+                  }
+
+                  if(this.ExportData.fileType!=undefined && this.ExportData.fileType!=null){
+
+                    this.fileType =  this.ExportData.fileType
+
+                  }
+
+                  this.ExcelData = this.disposeData(this.ExportData);
+
+                }
 
               }
 
+            }
+
+            if(this.ExcelData!==null){
+
+              this.ExcelPopFlag = true;
+
             }else{
 
-              this.$Message.error("数据格式错误,解析失败,请检查Excel数据");
+              console.log(this.ExcelData)
 
-              return
+              this.$Message.error("数据格式错误,解析失败,请联系管理员");
 
             }
 
           },
           // 处理显示数据
-          disposeData(ExPortArray){
+          disposeData(ExPortObj){
 
-            let RETURNARRAY = [];
+            let awaitData = JSON.parse(JSON.stringify(ExPortObj))
 
-            let awaitArray = JSON.parse(JSON.stringify(ExPortArray))
+            let headAry = awaitData.headData;
 
-            if(awaitArray){
+            let Ary = awaitData.bodyData;
 
-              for(let sheet = 0; sheet <awaitArray.length;sheet++ ){
+            let formattingHeadAry = awaitData.formattingHeadAry
 
-                let headAry = awaitArray[sheet].headData;
+            let newAry = [];
 
-                let Ary = awaitArray[sheet].bodyData;
+            for(let i = 0; i<Ary.length; i++){
 
-                let formattingHeadAry = awaitArray[sheet].formattingHeadAry
+              let index = i;
 
-                let newAry = [];
+              let arr = [];
 
-                for(let i = 0; i<Ary.length; i++){
+              let c = 0;
 
-                  let index = i;
-
-                  let arr = [];
-
-                  let c = 0;
-
-                  for (let j in Ary[i]){
-
-                    let obj = {
-
-                      name:Ary[i][j],
-
-                      row:index,
-
-                      col:c
-
-                    }
-
-                    arr.push(obj);
-
-                    c++
-
-                  }
-
-                  newAry.push(arr);
-
-                }
+              for (let j in Ary[i]){
 
                 let obj = {
 
-                  tHead:headAry,
+                  name:Ary[i][j],
 
-                  tBody:newAry,
+                  row:index,
 
-                  formattingHeadAry:formattingHeadAry
+                  col:c
 
                 }
 
-                RETURNARRAY.push(obj);
+                arr.push(obj);
 
-                this.SheetsAry.push({sheet:'Sheet'+(Number(sheet)+1)});
+                c++
 
               }
 
+              newAry.push(arr);
+
             }
 
-            return RETURNARRAY;
+            let obj = {
+
+              tHead:headAry,
+
+              tBody:newAry,
+
+              formattingHeadAry:formattingHeadAry
+
+            }
+
+            return obj;
 
           },
           //关闭弹窗
@@ -278,21 +237,52 @@
 
             if(flag){
 
-              let SheetAry = [];
+              let tbody = JSON.parse(JSON.stringify(this.ExportData.bodyData));
 
-              let newAry = JSON.parse(JSON.stringify(this.ExportData));
+              if(tbody != undefined){
 
-              for(let i = 0; i<newAry.length;i++){
+                if(tbody!=null){
 
-                newAry[i].bodyData.unshift(newAry[i].headData[1]);
+                  if(tbody.length>0){
 
-                SheetAry.push(newAry[i].bodyData)
+                    let tHead = this.ExportData.headData
+
+                    tbody.unshift(tHead[1])
+
+                    console.log(tbody);
+
+                    let tbody1 = tbody;
+
+                    let ary = [];
+
+                    ary.push(tbody);
+
+                    ary.push(tbody1);
+
+
+                    this.downloadMater(ary)
+
+                    // this.downloadMater(tbody)
+
+                    this.ExcelPopFlag = false;
+
+                  }else{
+
+                    this.$Message.error("数据错误,请联系管理员");
+
+                  }
+
+                }else{
+
+                  this.$Message.error("数据错误,请联系管理员");
+
+                }
+
+              }else{
+
+                this.$Message.error("数据错误,请联系管理员");
 
               }
-
-              this.downloadMater(SheetAry)
-
-              this.ExcelPopFlag = false;
 
             }else{
 
@@ -344,11 +334,15 @@
 
                     wb.SheetNames.push('Sheet'+(i+1));
 
+                    console.log(Ary[i]);
+
                     wb.Sheets['Sheet'+(i+1)] = XLSX.utils.json_to_sheet(Ary[i])
 
                 }
 
               }
+
+              console.log(wb);
 
               //创建二进制对象写入转换好的字节流
               let tmpDown =  new Blob([this.s2ab(XLSX.write(wb, wopts))], { type: "application/octet-stream" })

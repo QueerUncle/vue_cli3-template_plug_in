@@ -17,13 +17,41 @@
 
     width = "1000">
 
+    <!--<div class = "table">-->
+
+      <!--<div class = "t_head" v-for = "(item,index) in ExceldataFn.tHead" style="width: 100%;overflow: hidden;">-->
+
+        <!--<ul v-for="(key,value) in item">-->
+
+          <!--<li >{{key}}</li>-->
+
+        <!--</ul>-->
+
+      <!--</div>-->
+
+      <!--<div class = "t_body" >-->
+
+        <!--<div v-for="(item,index) in ExceldataFn.tBody" style="width: 100%;overflow: hidden;">-->
+
+          <!--<ul v-for="(i,indexs) in item">-->
+
+            <!--<li :style = "{color:i.color}">{{i.name}}</li>-->
+
+          <!--</ul>-->
+
+        <!--</div>-->
+
+      <!--</div>-->
+
+    <!--</div>-->
+
     <div class = "table-cont-export" id = table-cont-export>
 
       <table cellspacing="0" cellpadding="0" border="0" class = "table" width="100%">
 
-        <thead v-if="ExcelPopData.formattingHeadAry">
+        <thead v-if="ExceldataFn.formattingHeadAry">
 
-        <tr v-if="index!=0" v-for="(item,index) in ExcelPopData.formattingHeadAry">
+        <tr v-if="index!=0" v-for="(item,index) in ExceldataFn.formattingHeadAry">
 
           <th v-for="(key,value) in item" v-html="key"></th>
 
@@ -33,7 +61,7 @@
 
         <thead v-else>
 
-        <tr v-if="index!=0" v-for="(item,index) in ExcelPopData.tHead">
+        <tr v-if="index!=0" v-for="(item,index) in ExceldataFn.tHead">
 
           <th v-for="(key,value) in item" v-html="key"></th>
 
@@ -43,7 +71,7 @@
 
         <tbody>
 
-        <tr v-for="(item,index) in ExcelPopData.tBody">
+        <tr v-for="(item,index) in ExceldataFn.tBody">
 
           <td v-for="(i,indexs) in item">{{i.name}}</td>
 
@@ -52,16 +80,6 @@
         </tbody>
 
       </table>
-
-    </div>
-
-    <div v-if="SheetsAryFn.length>1" class = "labelDiv" style="overflow: hidden">
-
-      <ul style="overflow: hidden">
-
-        <li @click = "selectLabel(index)" :class="{active:index == active}"  v-for="(i,index) in SheetsAryFn">{{i.sheet}}</li>
-
-      </ul>
 
     </div>
 
@@ -87,55 +105,21 @@
 
               ExcelPop:false,
 
-              active:0,
-
-              propsExcelData:[],
-
-              ExcelPopData:{
-
-                tHead:[],
-
-                tBody:[],
-
-              },
-
             }
 
         },
-        props:['ExcelPopFlag','ExcelData','SheetsAry'],
-
-        watch:{
-
-          'ExcelPopFlag'(n){
-
-            this.ExcelPop = n;
-
-          },
-
-          ExcelData(n){
-
-            this.propsExcelData = n;
-
-            this.ExcelPopData = n[this.active]
-
-          }
-
-        },
+        props:['ExcelPopFlag','ExcelData'],
 
         computed:{
 
-          SheetsAryFn(){
+          ExceldataFn(){
 
-            return this.$props.SheetsAry
+            return this.$props.ExcelData;
 
           }
 
         },
         mounted() {
-
-          this.propsExcelData = this.$props.ExcelData
-
-          this.ExcelPopData = this.propsExcelData[this.active];
 
           this.ExcelPop = this.$props.ExcelPopFlag;
 
@@ -154,6 +138,15 @@
           });
 
         },
+        watch:{
+
+            'ExcelPopFlag'(n){
+
+              this.ExcelPop = n;
+
+            }
+
+        },
         methods: {
 
           //点击弹窗确定
@@ -168,18 +161,11 @@
             this.$emit("cloce",false);
 
           },
+
           //关闭
           close(){
 
             this.$emit("cloce",false);
-
-          },
-          //切换标签
-          selectLabel(index){
-
-            this.active = index;
-
-            this.ExcelPopData = this.propsExcelData[index]
 
           }
 
@@ -296,69 +282,83 @@
     border: 1px solid #e8eaec;
 
   }
-  .labelDiv{
 
-    margin: 0 10px;
 
-    ul{
+  /*.table{*/
 
-      width:100%;
+    /*width: 100%;*/
 
-      border-bottom:1px solid #dcdee2;
+    /*height: 100%;*/
 
-      li{
+    /*overflow:scroll;*/
 
-        height:30px;
+  /*.t_head{*/
 
-        line-height: 30px;
+      /*width: 100%;*/
 
-        width: 60px;
+      /*height: 100%;*/
 
-        text-align: center;
+      /*overflow: hidden;*/
 
-        border: 1px solid #dcdee2;
+      /*ul{*/
 
-        float: left;
+        /*width: 150px;*/
 
-        border-top:none ;
+        /*height: 100%;*/
 
-        border-right:none ;
+        /*overflow: hidden;*/
 
-        background:#f8f8f9;
+        /*float: left;*/
 
-        margin-left: 1px;
+        /*li{*/
 
-        border-radius: 4px 4px 0 0;
+          /*height: 40px;*/
 
-        cursor:pointer;
+          /*line-height: 40px;*/
 
-        &:nth-child(0){
+          /*text-align: center;*/
 
-           margin-left:0;
+          /*overflow: hidden;*/
 
-         };
-        &:nth-last-child(1){
+        /*}*/
 
-           border-right: 1px solid #dcdee2;
+      /*}*/
 
-        };
+    /*}*/
+  /*.t_body{*/
 
-        &:hover{
+    /*width: 100%;*/
 
-           color:#2d8cf0;
+    /*overflow: hidden;*/
 
-         }
+    /*float: left;*/
 
-      }
+    /*margin-bottom:20px;*/
 
-    }
+    /*ul{*/
 
-  }
-  .active{
+      /*width: 150px;*/
 
-    color:#2d8cf0 !important;
+      /*height: 100%;*/
 
-    background:#fff !important;
+      /*overflow: hidden;*/
 
-  }
+      /*float: left;*/
+
+    /*li{*/
+
+
+          /*height: 40px;*/
+
+          /*line-height: 40px;*/
+
+          /*text-align: center;*/
+
+        /*}*/
+
+      /*}*/
+
+    /*}*/
+
+  /*}*/
 </style>

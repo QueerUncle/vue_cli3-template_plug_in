@@ -15,11 +15,7 @@
 
     <excel-import-pop
 
-      v-if="ExcelData.length>0"
-
       :ExcelData = "ExcelData"
-
-      :SheetsAry = "SheetsAry"
 
       @cloce = "cloce"
 
@@ -59,7 +55,13 @@
 
               primitiveExcelData:null,
 
-              ExcelData:[],
+              ExcelData:{
+
+                tHead:[],
+
+                tBody:[],
+
+              },
 
               SuccessColor:"#000000",
 
@@ -74,8 +76,6 @@
               fileType:null,
 
               importImgUrl:'',
-
-              SheetsAry:[],
 
             }
 
@@ -148,7 +148,7 @@
 
             if(flag){
 
-              let fg = this.onServe(this.ExcelData);
+              let fg = this.onServe();
 
               if(fg!==false){
 
@@ -214,34 +214,28 @@
           },
           analysisXlsx(_this){
 
-            let $t = _this;
+            let wb;
 
-            let persons = []; // 存储获取到的数据
-
-            let SheetsAry = []; // 存储获取到的标签
-
-            let workbook = null; //二进制的表格内容
-
-            let fromTo = ""; //表格范围，可用于判断表头是否数量是否正确
-
-            let obj = $t.imFile;
+            let obj = _this.imFile;
 
             if (!obj.files) {
 
-              $t.$Message.error('文件获取失败，请联系管理员！');
+              _this.$Message.error('文件获取失败，请联系管理员！');
 
               return;
 
             }
             let f = obj.files[0];
 
-            $t.fileName = f.name;
+            _this.fileName = f.name;
 
-            $t.fileSuffix = $t.fileName.substring($t.fileName.lastIndexOf(".")+1,$t.fileName.length);
+            _this.fileSuffix = _this.fileName.substring(_this.fileName.lastIndexOf(".")+1,_this.fileName.length);
 
-            $t.fileSize = f.size;
+            _this.fileSize = f.size;
 
-            $t.fileType = f.type;
+            _this.fileType = f.type;
+
+            let $t = _this;
 
             let fileReader = new FileReader();
 
@@ -261,19 +255,18 @@
 
                 let data = e.target.result;
 
-                if (this.rABS) {
+                if ($t.rABS) {
 
-                  workbook = XLSX.read(btoa(this.fixdata(data)), {
+                  $t.wb = XLSX.read(btoa(this.fixdata(data)), {
 
                     // 手动转化
                     type: "base64"
 
                   });
 
+                } else {
 
-                }else{
-
-                  workbook =$t.wb = XLSX.read(data, {
+                  $t.wb = XLSX.read(data, {
 
                     type: "binary"
 
@@ -293,44 +286,9 @@
 
               console.log($t.wb,'奥术大师大所大所大所多');
 
-              // 遍历每张表读取
-              for (let sheet in workbook.Sheets) {
-
-                let sheetAry = [];
-
-                if (workbook.Sheets.hasOwnProperty(sheet)) {
-
-                  fromTo = workbook.Sheets[sheet]['!ref'];
-
-                  console.log(fromTo);
-
-                  if(fromTo!=undefined){
-
-                    sheetAry = XLSX.utils.sheet_to_json(workbook.Sheets[sheet]);
-
-                  }
-
-                  // break; // 如果只取第一张表，就取消注释这行
-
-                }
-
-                if(sheetAry.length>0){
-
-                  persons.push(sheetAry)
-
-                  SheetsAry.push({sheet:sheet})
-
-                }
-
-              }
-
-              $t.primitiveExcelData = persons;
-
-              $t.SheetsAry = SheetsAry;
-
               // let json = XLSX.utils.sheet_to_json($t.wb.Sheets[$t.wb.SheetNames[0]]);
 
-              // $t.primitiveExcelData = XLSX.utils.sheet_to_json($t.wb.Sheets[$t.wb.SheetNames[0]]);
+              $t.primitiveExcelData = XLSX.utils.sheet_to_json($t.wb.Sheets[$t.wb.SheetNames[0]]);
 
               $t.dealFile($t.primitiveExcelData); // analyzeData: 解析导入数据
 
@@ -377,19 +335,11 @@
 
               let Edata = JSON.parse(JSON.stringify(e))
 
-                this.ExcelData = fs.pluralSheerAssemblyData(Edata,this.ExcelRegulation,this.successColor,this.errorColor);
+              this.ExcelData = fs.assemblyData(Edata,this.ExcelRegulation,this.successColor,this.errorColor);
 
               if(this.ExcelData == "000000"){
 
                 this.$Message.error("表结构错误！第一行不能有中文字符！");
-
-                return
-
-              }
-
-              if(this.ExcelData.length<=0){
-
-                this.$Message.error("数据处理错误,请联系管理员！");
 
                 return
 
@@ -428,73 +378,59 @@
 
           },
           //确定函数处理
-          onServe(Ary){
+          onServe(){
 
-            let newAry = [];
+            let formattingHeadAry =  this.ExcelData.tHead;
 
-            if(Ary && Ary.length>0){
+            let headAry = JSON.parse(JSON.stringify(formattingHeadAry));
 
-              for(let sheet = 0; sheet<Ary.length; sheet++){
+            headAry[1] = this.primitiveExcelData[0]
 
-                let formattingHeadAry =  Ary[sheet].tHead;
+            let bodyAry = this.ExcelData.tBody;
 
-                let headAry = JSON.parse(JSON.stringify(formattingHeadAry));
+            let objData = {
 
-                console.log(this.primitiveExcelData)
+              headData:headAry,
 
-                headAry[1] = this.primitiveExcelData[sheet][0]
+              formattingHeadAry:formattingHeadAry,
 
-                let bodyAry = Ary[sheet].tBody;
+              bodyData:[],
 
-                let objData = {
+              fileName:this.fileName,
 
-                  headData:headAry,
+              fileSuffix:this.fileSuffix,
 
-                  formattingHeadAry:formattingHeadAry,
+              fileSize:this.fileSize,
 
-                  bodyData:[],
+              fileType:this.fileType,
 
-                  fileName:this.fileName,
+            };
 
-                  fileSuffix:this.fileSuffix,
+            if(bodyAry.length>0){
 
-                  fileSize:this.fileSize,
+              for(let i = 0; i<bodyAry.length; i++){
 
-                  fileType:this.fileType,
+                let obj = {};
 
-                };
+                for(let j = 0; j<bodyAry[i].length;j++){
 
-                if(bodyAry.length>0){
+                  if(bodyAry[i][j].flag){
 
-                  for(let i = 0; i<bodyAry.length; i++){
+                    obj[bodyAry[i][j].key] = bodyAry[i][j].innerText;
 
-                    let obj = {};
+                  }else{
 
-                    for(let j = 0; j<bodyAry[i].length;j++){
+                    this.$Message.error("表格中有错误数据");
 
-                      if(bodyAry[i][j].flag){
+                    this.ExcelPopFlag = true;
 
-                        obj[bodyAry[i][j].key] = bodyAry[i][j].innerText;
-
-                      }else{
-
-                        this.$Message.error("表格中有错误数据");
-
-                        this.ExcelPopFlag = true;
-
-                        return false;
-
-                      }
-
-                    }
-
-                    objData.bodyData.push(obj);
+                    return false;
 
                   }
 
                 }
 
-                newAry.push(objData);
+                objData.bodyData.push(obj);
 
               }
 
@@ -502,7 +438,7 @@
 
             this.ExcelPopFlag = false;
 
-            return  newAry;
+            return  objData;
 
           }
 
