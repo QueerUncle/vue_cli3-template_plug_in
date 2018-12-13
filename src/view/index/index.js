@@ -13,6 +13,8 @@ import 'iview/dist/styles/iview.css';
 
 import 'iview-editor/dist/iview-editor.css';
 
+import asdasd from '../../axios';
+
 // import VueQuillEditor  from 'vue-quill-editor'
 
 // import 'quill/dist/quill.core.css'
@@ -26,6 +28,8 @@ import 'iview-editor/dist/iview-editor.css';
 Vue.use(iView);
 
 Vue.config.productionTip = false;
+
+Vue.prototype.qwer = asdasd
 
 new Vue({
   render: h => h(App)

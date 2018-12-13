@@ -4,17 +4,17 @@
 <template>
   <div>
     <h1>ccc</h1>
-    <a href="index.html">index</a>
+    <a href="index.html">富文本编辑器</a>
     &nbsp;
     &nbsp;
     &nbsp;
     &nbsp;
-    <a href="view1.html">view1</a>
+    <a href="view1.html">CBIMPlayer</a>
     &nbsp;
     &nbsp;
     &nbsp;
     &nbsp;
-    <a href="view2.html">view2</a>
+    <a href="view2.html">测试用例</a>
 
     <div style = "width: 200px;height: 40px;">
 
@@ -22,7 +22,7 @@
 
     </div>
 
-    <div style = "width: 200px;height: 40px;" @click = "ExcelExportFn">
+    <div style = "width: 200px;height: 40px" @click = "ExcelExportFn">
 
       <excel-export :ExportImgUrl = ExportImgUrl ref = "ExcelExport" :ExportFileName = "ExportFileName" :ExportType = ExportType></excel-export>
 
@@ -43,47 +43,60 @@
 
               errColor:"pink",
 
-              // excelRegDataAry:[
-              //
-              //   {
-              //
-              //     index:0,
-              //
-              //     reg:[
-              //
-              //       {
-              //
-              //         name: "len10"
-              //
-              //       },
-              //
-              //     ]
-              //
-              //   },
-              //   {
-              //
-              //     index: 1,
-              //
-              //     reg:[
-              //
-              //       {
-              //
-              //         name:"isEmail"
-              //
-              //       }
-              //
-              //     ]
-              //
-              //   },
-              //
-              // ],
-              excelRegDataAry:[],
+              excelRegDataAry:[
+
+                {
+
+                  sheet:"sheet1",
+
+                  info:[
+
+                    {
+
+                      index:0,
+
+                      reg:[
+
+                        {
+
+                          name: "len10"
+
+                        },
+
+                      ]
+
+                    },
+
+                    {
+
+                      index: 1,
+
+                      reg:[
+
+                        {
+
+                          name:"isEmail"
+
+                        }
+
+                      ]
+
+                    },
+
+                  ]
+
+                }
+
+              ],
+              // excelRegDataAry:[],
 
               excelData:null,
 
-              ImportImgUrl:'./img/moveUp.png',
+              // ImportImgUrl:'./img/moveUp.png',
+              ImportImgUrl:'',
 
-              ExportImgUrl:'./img/moveDown.png',
+              // ExportImgUrl:'./img/moveDown.png',
+              ExportImgUrl:'',
 
               ExportType:"",
 

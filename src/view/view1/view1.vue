@@ -4,17 +4,17 @@
 <template>
   <div>
     <h1>ivew1</h1>
-    <a href="index.html">index</a>
+    <a href="index.html">富文本编辑器</a>
     &nbsp;
     &nbsp;
     &nbsp;
     &nbsp;
-    <a href="ccc.html">ccc</a>
+    <a href="ccc.html">excel导入、导出</a>
     &nbsp;
     &nbsp;
     &nbsp;
     &nbsp;
-    <a href="view2.html">view2</a>
+    <a href="view2.html">测试用例</a>
 
     <zxc :masg = "masg" @ddd = "ddd"></zxc>
     <br/>

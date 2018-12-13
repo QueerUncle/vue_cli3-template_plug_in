@@ -4,17 +4,17 @@
 <template>
   <div>
     <h1>index</h1>
-    <a href="view1.html">view1</a>
+    <a href="view1.html">CBIMPlayer</a>
     &nbsp;
     &nbsp;
     &nbsp;
     &nbsp;
-    <a href="view2.html">view2</a>
+    <a href="view2.html">测试用例</a>
     &nbsp;
     &nbsp;
     &nbsp;
     &nbsp;
-    <a href="ccc.html">ccc</a>
+    <a href="ccc.html">excel导入、导出</a>
     &nbsp;
     &nbsp;
     &nbsp;
@@ -41,6 +41,10 @@
 
     </div>
 
+    <div v-html = "divHtml"></div>
+
+    <button @click = "axiosGet">axiosGet</button>
+
   </div>
 
   </template>
@@ -54,6 +58,8 @@
   console.log(process.env,'我是process.env.NODE_ENVprocess.env.NODE_ENVprocess.env.NODE_ENV')
 
   import quill from '@/components/quill/index'
+
+  // import axios from '../../axios'
 
   export default {
         data () {
@@ -83,6 +89,8 @@
 
       },
         mounted () {
+
+          console.log(process.env)
 
           console.log(parmes,'parmes')
 
@@ -130,6 +138,8 @@
 
               console.log(this.$refs.quill.getRichTextContent())
 
+              this.divHtml = this.$refs.quill.getRichTextContent()
+
             }
 
           },
@@ -139,6 +149,37 @@
             console.log(this.$refs.quill.getnowLength(),'我是长度！')
 
           },
+
+          axiosGet(){
+
+            this.qwer({
+
+              url:'/queryAarticle',
+
+              method:'get'
+
+            })
+
+              .then((e) =>{
+
+                console.log(e);
+
+              })
+
+            // axios.AXIOS.get('/queryAarticle')
+            //
+            //   .then((e) =>{
+            //
+            //     console.log(e)
+            //
+            //   })
+            //   .catch((er) =>{
+            //
+            //     console.log(er);
+            //
+            //   })
+
+          }
 
         }
 

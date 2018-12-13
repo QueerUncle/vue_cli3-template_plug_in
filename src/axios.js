@@ -3,7 +3,7 @@
  */
 import axios from 'axios'
 
-let baseUrl = '';
+let baseUrl = '/api';
 
 let headers = {};
 
@@ -17,4 +17,4 @@ const AXIOS = axios.create({
   
 });
 
-export default {AXIOS}
+export default AXIOS

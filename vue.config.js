@@ -48,15 +48,15 @@ module.exports = {
     https: false, // https:{type:Boolean}
     open: true, //配置自动启动浏览器
     // proxy: 'http://localhost:4000' // 配置跨域处理,只有一个代理
-    // proxy: {
-    //   '/api': {
-    //     target: '<url>',
-    //     ws: true,
-    //     changeOrigin: true
-    //   },
-    //   '/foo': {
-    //     target: '<other_url>'
-    //   }
-    // },  // 配置多个代理
+    proxy: {
+      '/api': {
+        target:'http://127.0.0.1:8088',
+        ws: true,
+        changeOrigin: true,
+        pathRewrite: {
+          '^/api': ''  // 替换target中的请求地址，也就是说，在请求的时候，url用'/proxy'代替'http://ip.taobao.com'
+        }
+      },
+    },  // 配置多个代理
   },
 };
