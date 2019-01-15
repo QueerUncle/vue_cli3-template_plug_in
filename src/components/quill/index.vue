@@ -6,6 +6,7 @@
     <div class = "quill_Content">
       <Upload
         multiple
+        accept="image/*"
         :headers="header"
         :show-file-list="false"
         :action="serverUrl"
@@ -15,7 +16,7 @@
         name = "data"
         class = "avatar-uploader"
       >
-        <Button icon="ios-cloud-upload-outline">Upload files</Button>
+        <!--<Button icon="ios-cloud-upload-outline">Upload files</Button>-->
       </Upload>
       <quill-editor
         v-model="content"
@@ -77,6 +78,8 @@
   import 'quill/dist/quill.snow.css'
 
   import 'quill/dist/quill.bubble.css'
+
+  import './font.css'
 
   import {toolbarOptions} from './quill.conf'
 
@@ -261,6 +264,10 @@
 
            }
 
+         }else{
+
+             obj = {};
+
          }
 
          return obj
@@ -321,19 +328,19 @@
         //onEditorReady
         onEditorReady({editor,conent}){
 
-          this.$emit(this.incident.onReady,editor)
+            if(this.incident && this.incident.onReady){this.$emit(this.incident.onReady,editor)}
 
         },
         //onEditorBlur
         onEditorBlur(editor,content){
 
-          this.$emit(this.incidentFn.onBlur,content)
+            if(this.incidentFn && this.incidentFn.onBlur){this.$emit(this.incidentFn.onBlur,content)}
 
         },
         //onEditorFocus
         onEditorFocus(editor,content){
 
-          this.$emit(this.incidentFn.onFocus,content)
+            if(this.incidentFn && this.incidentFn.onFocus){this.$emit(this.incidentFn.onFocus,content)}
 
         },
         //富文本内容发生改变
@@ -341,11 +348,11 @@
 
           e.quill.deleteText(decimalNum-1,1,strValue);//保留 strValue 的 前 decimalNum 位字符，
 
-          this.tipNum = decimalNum- this.quill.getLength()
+          this.tipNum = decimalNum- this.quill.getLength();
 
           this.disposeIMGMethod();
 
-          this.$emit(this.incidentFn.onChange,this.content)
+          if(this.incidentFn && this.incidentFn.onChange){this.$emit(this.incidentFn.onChange,this.content)}
 
         },
         //上传文件之间
@@ -395,17 +402,18 @@
 
           let exportHtml = this.content;
 
-          document.querySelectorAll("P").forEach((i,v) =>{
+          // document.querySelectorAll("P").forEach((i,v) =>{
+          //
+          //   if(i.innerText.indexOf("<"+"script"+">")>=0 || i.innerText.indexOf("</"+"script"+">")>=0 || i.innerText.indexOf("function")>=0){
+          //
+          //     exportHtml = false;
+          //
+          //   }
+          //
+          // })
 
-            if(i.innerText.indexOf("<"+"script"+">")>=0 || i.innerText.indexOf("</"+"script"+">")>=0 || i.innerText.indexOf("function")>=0){
-
-              exportHtml = false;
-
-            }
-
-          })
-
-          return exportHtml;
+          return exportHtml
+          // return this.htmlEncode(exportHtml);
 
         },
         //设置HTML内容
@@ -581,7 +589,7 @@
         //给所有imgdom绑定样式及事件
         disposeIMGMethod(){
 
-          let Img_Node = document.querySelectorAll("img")
+          let Img_Node = document.querySelectorAll("img");
 
           Img_Node.forEach((i,v) =>{
 
@@ -593,9 +601,9 @@
 
             i.onclick = null;
 
-            i.onclick = function(){
+            i.onclick = () =>{
 
-              _this.$emit(_this.incidentFn.onClickImg,i.currentSrc);
+              if(_this.incidentFn && _this.incidentFn.onClickImg){ _this.$emit(_this.incidentFn.onClickImg,i.currentSrc);}
 
               _this.clickImgSrc = i.currentSrc;
 
@@ -605,6 +613,31 @@
 
           })
 
+        },
+        htmlEncode(str){
+          var s = "";
+          if(str == null) str = "";
+          if(str.length == 0) return "";
+          s = str.replace(/&/g,"&amp;");
+          s = s.replace(/</g,"&lt;");
+          s = s.replace(/>/g,"&gt;");
+          s = s.replace(/ /g,"&nbsp;");
+          s = s.replace(/\'/g,"&#39;");
+          s = s.replace(/\"/g,"&quot;");
+          return s;
+        },
+
+        htmlDecode(str){
+          var s = "";
+          if(str == null) str = "";
+          if(str.length == 0) return "";
+          s = str.replace(/&amp;/g,"&");
+          s = s.replace(/&lt;/g,"<");
+          s = s.replace(/&gt;/g,">");
+          s = s.replace(/&nbsp;/g," ");
+          s = s.replace(/&#39;/g,"\'");
+          s = s.replace(/&quot;/g,"\"");
+          return s;
         }
 
       }

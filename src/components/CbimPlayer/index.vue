@@ -3,15 +3,15 @@
  -->
 <template>
 
-    <div class = "CBIM_PLAYER">
+    <div class = "CBIM_PLAYER" id="CBIM_PLAYER">
 
-      <div v-if="videoDataFn.flag" class = "video_player" :id = "videoDataFn.idName" style = "width:100%;height:auto"></div>
+        <div v-if="videoDataFn.flag" class = "video_player" :id = "videoDataFn.idName" style = "width:100%;height:auto"></div>
 
-      <div v-if="!videoDataFn.flag" class = "video_player video_player_error" :id = "videoDataFn.idName" style = "width:100%;height:auto">
+        <div v-if="!videoDataFn.flag" class = "video_player video_player_error" :id = "videoDataFn.idName" style = "width:100%;height:auto">
 
-        CBIM_PLATER 初始化失败
+          CBIM_PLATER 初始化失败
 
-      </div>
+        </div>
 
     </div>
 
@@ -47,6 +47,14 @@
 
           const rtmp = (/^rtmp:\/\/\S*$/i);
 
+          let coverpic = {
+
+            "src":"https://test-tools.cbim.org.cn/api/download/v1/download?fileId=group1/M00/00/43/rBNM4VvykUKAIFUaAAAi5sWDNXU257.jpg",
+
+              "style":"cover"
+
+          };
+
           let obj = {
 
             "autoplay": true,  //iOS下safari浏览器，以及大部分移动端浏览器是不开放视频自动播放这个能力的
@@ -59,43 +67,36 @@
 
             "flag":true,
 
-            "coverpic":{
-
-              "src":"https://test-tools.cbim.org.cn/api/download/v1/download?fileId=group1/M00/00/43/rBNM4VvykUKAIFUaAAAi5sWDNXU257.jpg",
-
-              "style":"cover"
-
-            }
+            "flash":false,
 
           };
 
-          let coverpic = {};
-
           let videoData = this.$props.videoData;
 
-          if(videoData.controls && videoData.controls!=='' && videoData.controls!==null){
 
-            obj.controls = videoData.controls;
+          if(videoData){
+
+            obj = this.extend(obj,videoData,true);
 
           }
 
-          if(videoData.vodeoUrl){
+          if(videoData.videoUrl){
 
-            if(m3u8.test(videoData.vodeoUrl)){
+            if(m3u8.test(videoData.videoUrl)){
 
-              obj = Object.assign(obj,{'m3u8':videoData.vodeoUrl})
+              obj = Object.assign(obj,{'m3u8':videoData.videoUrl})
 
-            }else if(mp4.test(videoData.vodeoUrl)){
+            }else if(mp4.test(videoData.videoUrl)){
 
-              obj = Object.assign(obj,{'mp4':videoData.vodeoUrl})
+              obj = Object.assign(obj,{'mp4':videoData.videoUrl})
 
-            }else if(flv.test(videoData.vodeoUrl)){
+            }else if(flv.test(videoData.videoUrl)){
 
-              obj = Object.assign(obj,{'flv':videoData.vodeoUrl})
+              obj = Object.assign(obj,{'flv':videoData.videoUrl})
 
-            }else if(rtmp.test(videoData.vodeoUrl)){
+            }else if(rtmp.test(videoData.videoUrl)){
 
-              obj = Object.assign(obj,{'rtmp':videoData.vodeoUrl})
+              obj = Object.assign(obj,{'rtmp':videoData.videoUrl})
 
             }
 
@@ -105,100 +106,107 @@
 
           }
 
-          if(videoData.coverpic){
+          if(!obj.coverpic){
 
-              if(videoData.coverpic.src && videoData.coverpic.src!=='' && videoData.coverpic.src!==null){
+              obj.coverpic = coverpic
 
-                coverpic.src = videoData.coverpic.src
+          }else{
 
-              }else{
+            if(!obj.coverpic.src){obj.coverpic.src = coverpic.src};
 
-                coverpic.src = "https://test-tools.cbim.org.cn/api/download/v1/download?fileId=group1/M00/00/43/rBNM4VvykUKAIFUaAAAi5sWDNXU257.jpg"
-
-              }
-
-              if(videoData.coverpic.style && videoData.coverpic.style!=='' && videoData.coverpic.style!==null){
-
-                coverpic.style = videoData.coverpic.style
-
-              }else{
-
-                coverpic.style = "cover"
-
-              }
+            if(!obj.coverpic.style){obj.coverpic.style = coverpic.style};
 
           }
+
+          if(!obj.pauseMetodName){obj.pauseMetodName = "on-pause"}
+
+          if(!obj.playEndMethodName){obj.playEndMethodName = "on-playEnd"}
+
+          if(!obj.idName){obj.idName = `CbimPlayer_${new Date().getTime()}`;}
 
           let parameter = {
 
             obj :obj,
 
-            "pauseMetodName": '',
+            "flag":obj.flag,
 
-            "flag":obj.flag
+            idName:obj.idName,
 
-          }
+            pauseMetodName:obj.pauseMetodName,
 
-          if(videoData.pauseMetodName && videoData.pauseMetodName!=='' && videoData.pauseMetodName!==undefined && videoData.pauseMetodName!==null ){
+            playEndMethodName:obj.playEndMethodName,
 
-            parameter.pauseMetodName = videoData.pauseMetodName
+          };
 
-          }else{
-
-            parameter.pauseMetodName = "on-pause"
-
-          }
-
-          if(videoData.idName && videoData.idName!=='' && videoData.idName!==undefined && videoData.idName!==null ){
-
-            parameter.idName = videoData.idName
-
-          }else{
-
-            parameter.idName = `CbimPlayer_${new Date().getTime()}`;
-
-          }
-
-          console.log(parameter.idName)
-
+          console.log(parameter,'asdasdadsasdasdasd')
 
           return parameter
 
-        }
+        },
 
       },
 
       mounted() {
 
-        import('tcplayer/TcPlayer').then((e) => {
+        this.initializeTcPlayer();
 
-          const TcPlayer = e.TcPlayer
+      },
 
-          let _this = this;
+      methods: {
+        //初始化Tc-Player（普通）
+        initializeTcPlayer(){
 
-          if(this.videoDataFn.flag){
+          import('tcplayer/TcPlayer').then((e) => {
 
-            this.TcPlayer = new TcPlayer(this.videoDataFn.idName,this.videoDataFn.obj);
+            const TcPlayer = e.TcPlayer;
 
-            this.TcPlayer.listener = function(e){
+            let _this = this;
 
-              // console.log(e);
+            if(this.videoDataFn.flag){
 
-              if(e.type == 'pause'){  //暂停
+              this.TcPlayer = new TcPlayer(this.videoDataFn.idName,this.videoDataFn.obj);
 
-                _this.$emit(_this.videoDataFn.pauseMetodName,_this.getCurrentTime())
+              this.TcPlayer.listener = function(e){
 
-              }else if(e.type == "load"){   //加载完毕
+                if(e.type == 'pause'){  //暂停
 
-                _this.getDuration();
+                  if(_this.getCurrentTime()< _this.getDuration()){
 
-              }else if(e.type == "play"){  //开始播放
+                    _this.$emit(_this.videoDataFn.pauseMetodName,_this.getCurrentTime())
 
-                _this.getCurrentTime();
+                  }
 
-              }else if(e.type == "ended"){  //播放结束
+                }else if(e.type == "load"){   //加载完毕
 
-                _this.getCurrentTime();
+                  _this.getDuration();
+
+                }else if(e.type == "play"){  //开始播放
+
+                  _this.getCurrentTime();
+
+                }else if(e.type == "ended"){  //播放结束
+
+                  _this.$emit(_this.videoDataFn.playEndMethodName,_this.getCurrentTime())
+
+                }
+
+              }
+
+            }
+
+          })
+
+        },
+        //合并参数
+        extend(o,n,override) {
+
+          for(let key in n){
+
+            if(n.hasOwnProperty(key) && (!o.hasOwnProperty(key) || override)){
+
+              if(n[key]!=""){
+
+                o[key]=n[key];
 
               }
 
@@ -206,13 +214,10 @@
 
           }
 
-        })
+          return o;
 
-      },
-
-      methods: {
-
-          //播放视频
+        },
+        //播放视频
         play(){
 
           return this.TcPlayer.play();
@@ -288,7 +293,6 @@
           return t;
 
         },
-
         //设置是否全屏
         fullscreen(f){
 

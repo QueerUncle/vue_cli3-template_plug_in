@@ -11,7 +11,7 @@
 
     <img style="height: 100%;width: 100%;cursor: pointer" v-if="ImportImgUrlFn!=''" :src="ImportImgUrlFn" @click = "uploadFile">
 
-    <Button type="primary" v-else style="width: 100%;height: 100%;"  @click = "uploadFile"> 导入</Button>
+    <Button type="primary" v-else style="width: 100%;height: 100%;"  @click = "uploadFile"><slot>数据导入</slot></Button>
 
     <excel-import-pop
 

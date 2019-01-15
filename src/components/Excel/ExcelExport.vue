@@ -9,7 +9,7 @@
 
     <img style="height: 100%;width: 100%;cursor: pointer" v-if="ExportImgUrlFn!=''" :src="ExportImgUrlFn">
 
-    <Button style="width: 100%;height: 100%;" v-else >导出</Button>
+    <Button style="width: 100%;height: 100%;" v-else ><slot>数据导出</slot></Button>
 
     <excel-export-pop
 

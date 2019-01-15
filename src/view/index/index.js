@@ -7,13 +7,11 @@ import App from './index.vue'
 
 import iView from 'iview'
 
-import '../../components/quill/font.css'
-
 import 'iview/dist/styles/iview.css';
 
 import 'iview-editor/dist/iview-editor.css';
 
-import asdasd from '../../axios';
+import Http from '../../axios'
 
 // import VueQuillEditor  from 'vue-quill-editor'
 
@@ -27,9 +25,11 @@ import asdasd from '../../axios';
 
 Vue.use(iView);
 
+Vue.use(Http,['qwer','$cancel']);
+
 Vue.config.productionTip = false;
 
-Vue.prototype.qwer = asdasd
+// Vue.prototype.qwer = asdasd
 
 new Vue({
   render: h => h(App)

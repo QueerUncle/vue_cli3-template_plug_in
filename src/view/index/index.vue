@@ -15,6 +15,13 @@
     &nbsp;
     &nbsp;
     <a href="ccc.html">excel导入、导出</a>
+
+
+
+
+
+    <a href="cbimIndex.html">CBIM2.0Test</a>
+
     &nbsp;
     &nbsp;
     &nbsp;
@@ -27,7 +34,6 @@
 
       <quill
         :masg = "masgs"
-        :incident = incident
         :MaxWords = 100
         :toolbar = false
         ref = "quill"

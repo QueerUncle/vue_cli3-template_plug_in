@@ -15,16 +15,23 @@
     &nbsp;
     &nbsp;
     <a href="view2.html">测试用例</a>
+    &nbsp;
+    &nbsp;
+    &nbsp;
+    &nbsp;
+    <a href="cbimIndex.html">CBIM2.0Test</a>
+
+
 
     <div style = "width: 200px;height: 40px;">
 
-      <excel-import @on-clear-click = "onClearClick" :ImportImgUrl = ImportImgUrl @on-seve-click = "onServeClick" :excelRegDataAry = excelRegDataAry :succColor = succColor :errColor = errColor></excel-import>
+      <excel-import class = "excelImport" @on-clear-click = "onClearClick" :ImportImgUrl = ImportImgUrl @on-seve-click = "onServeClick" :excelRegDataAry = excelRegDataAry :succColor = succColor :errColor = errColor>数据导入</excel-import>
 
     </div>
 
     <div style = "width: 200px;height: 40px" @click = "ExcelExportFn">
 
-      <excel-export :ExportImgUrl = ExportImgUrl ref = "ExcelExport" :ExportFileName = "ExportFileName" :ExportType = ExportType></excel-export>
+      <excel-export :ExportImgUrl = ExportImgUrl ref = "ExcelExport" :ExportFileName = "ExportFileName" :ExportType = ExportType>数据导出</excel-export>
 
     </div>
 
@@ -141,5 +148,19 @@
 </script>
 
 <style scoped lang="scss">
+.excelImport{
 
+  /deep/ button{
+
+    background-color: red;
+
+    &:hover{
+
+      background-color: #0000cc;
+
+    }
+
+  }
+
+}
 </style>

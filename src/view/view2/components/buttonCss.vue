@@ -1,4 +1,4 @@
-<!--
+mu-text-field mu-input-content<!--
  -  2018/12/12  lize
  -->
 <template>
@@ -16,18 +16,37 @@
     <Button class = "j" type="primary">Primary</Button>
     <Button class = "k" type="primary">Primary</Button>
     <Button class = "l" type="primary">Primary</Button>
-  </div>
+
+    <div class="icontent">
+      <div class="logincontent">
+        <h3>师生互动-登录</h3>
+        <input type="text" v-model="username" placeholder="请输入手机号或邮箱">
+        <input type="password" v-model="password" placeholder="请输入密码">
+        <div class="loginb" @click="loginb($event)">Login 登录</div>
+      </div>
+    </div>
+      </div>
 </template>
 
 <script>
     export default {
         data() {
-            return {}
+            return {
+
+              username: '17012345678',
+              password: '123456'
+            }
         },
         mounted() {
 
         },
-        methods: {}
+        methods: {
+
+          loginb(e) {
+            // this.$router.push({ name: 'cousermanager', params: { pagenum: pagenum }})
+            // this.$router.push({ name: 'groupwork'})
+          }
+        }
     }
 </script>
 
@@ -163,4 +182,139 @@
     border-radius:10px;
     width:500px;
   }
+
+
+
+  .container{
+
+    width: 100%;
+    padding-right: 8px;
+    padding-left: 8px;
+    margin-right: auto;
+    margin-left: auto;
+    max-width: 540px;
+    margin-top: 50px;
+
+    .mu-input{
+
+      font-size: 16px;
+      width: 256px;
+      min-height: 48px;
+      display: inline-block;
+      position: relative;
+      color: rgba(0,0,0,.54);
+      margin-bottom: 16px;
+      padding-bottom: 12px;
+      padding-top: 4px;
+
+      .mu-input-content {
+        height: 100%;
+        position: relative;
+      }
+      .mu-text-field {
+        display: -webkit-box;
+        display: -ms-flexbox;
+        display: flex;
+        -webkit-box-pack: start;
+        -ms-flex-pack: start;
+        justify-content: flex-start;
+        -webkit-box-align: center;
+        -ms-flex-align: center;
+        align-items: center;
+        width: 100%;
+        .mu-text-field-input {
+          -webkit-appearance: none;
+          -moz-appearance: none;
+          appearance: none;
+          outline: none;
+          border: none;
+          background: none;
+          border-radius: 0 0 0 0;
+          -webkit-box-shadow: none;
+          box-shadow: none;
+          display: block;
+          padding: 0;
+          margin: 0;
+          width: 100%;
+          height: 32px;
+          font-style: inherit;
+          font-variant: inherit;
+          font-weight: inherit;
+          font-stretch: inherit;
+          font-size: inherit;
+          color: rgba(0,0,0,.87);
+          font-family: inherit;
+          position: relative;
+          -webkit-box-flex: 1;
+          -ms-flex: 1;
+          flex: 1;
+          &:focus{
+            color:#2196f3
+          }
+        }
+      }
+
+    }
+    .mu_fouse{
+
+      color:#2196f3
+
+    }
+
+  }
+  .icontent{
+    width: 90%;
+    height: 100%;
+    margin: 0 5% 0 5%;
+    overflow: hidden;
+  }
+  .logincontent{
+    width: 90%;
+    height: 100%;
+    margin: 50px 5% 0 5%;
+    overflow: hidden;
+    text-align: center;
+  }
+  .logincontent input{
+    width: 100%;
+    height: 35px;
+    padding: 3px;
+    margin-top: 20px;
+    /* 这里是去除掉input的默认样式然后修改为自己的 */
+    background:none;
+    outline:none;
+    border:0px;
+    /* 这里是修改为自己的样式 */
+    border-bottom: 2px solid #dcdcdc;
+    border-bottom-left-radius: 1px;
+    border-bottom-right-radius: 1px;
+    /* 使用怪异盒模型，也可以不使用 */
+    box-sizing: border-box;
+    transition:border-bottom 0.3s !important;
+  }
+  /* 这里是设置input获得焦点时的变化 */
+  .logincontent input:focus{
+    transition:border-bottom 0.3s !important;
+    border-bottom: 2px solid #0F996B;
+    border-bottom-left-radius: 1px;
+    border-bottom-right-radius: 1px;
+
+  }
+  /* 为登录div设置样式 */
+  .loginb{
+    margin-top: 20px;
+    width: 100%;
+    height: 40px;
+    line-height: 40px;
+    background-color: rgb(7, 187, 127);
+    border-radius: 5px;
+    font-size: 18px;
+    color: #ffffff;
+  }
+  /* 设置登录div被点击时改变一下背景色 */
+  .loginb:active{
+    background-color: #0F996B;
+  }
+
+
 </style>

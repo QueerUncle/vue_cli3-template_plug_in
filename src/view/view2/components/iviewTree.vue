@@ -5,7 +5,10 @@
   <div>
     <Tree :data="data5" :render="renderContent" ref = "threeTwo" @on-select-change = "onSelectChangeTwo"></Tree>
 
-    <Tree :data="data1" ref = "treeOne" @on-select-change = "onSelectChange"></Tree>
+    <Tree check-strictly :data="data1" ref = "treeOne" @on-select-change = "onSelectChange" show-checkbox ></Tree>
+
+    <Tree :data="data3" :load-data="loadData"  ref = "asd" show-checkbox></Tree>
+
   </div>
 
 </template>
@@ -165,12 +168,69 @@
                   ]
                 }
               ],
+              data3: [
+                {
+                  title: 'parent',
+                  loading: false,
+                  children: []
+                }
+              ]
             }
         },
         mounted() {
 
         },
         methods: {
+
+          loadData (item, callback) {
+
+            setTimeout(() => {
+              const data = [
+                {
+                  title: 'children',
+                  loading: false,
+                  children: []
+                },
+                {
+                  title: 'children',
+                  loading: false,
+                  children: []
+                }
+              ];
+              callback(data);
+            }, 1000);
+
+            console.log(item);
+
+            console.log(this.$refs.asd.flatState);
+
+            // let wss = this.opiu(item,[]);
+
+            // console.log(wss);
+
+          },
+
+          opiu(item,Ary){
+
+              let arr = Ary;
+
+              let root = this.$refs.asd.flatState;
+
+              let target = root[item.nodeKey];
+
+              arr.push(target);
+
+              if(target.parent >0){
+
+                  return this.opiu(target,root,arr);
+
+              }else{
+
+                return arr;
+
+              }
+
+          },
 
           renderContent (h, { root, node, data }) {
             return h('span', {
