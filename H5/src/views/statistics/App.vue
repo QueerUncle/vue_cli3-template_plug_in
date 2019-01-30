@@ -199,13 +199,17 @@
 
           .then((e) =>{
 
-            this.chartDataAry =  this.processingData(e.data);
+            if(e.success){
+
+              this.chartDataAry =  this.processingData(e.data);
+
+            }
 
             setTimeout(() =>{
 
               this.getStatisticsData(urlParams)
 
-            },2000)
+            },3000)
 
           })
 
