@@ -9,6 +9,14 @@ Vue.use(Vuex);
 
 export default new Vuex.Store({
   
-  state:{}
+  state:{
+    
+    userInfo:null,
+  
+    hintStr:null,
+    
+    isgetUserInfo:true,
+    
+  }
   
 })

@@ -13,15 +13,15 @@ export default new Router({
   
     {
       
-      path:'/',
+      path: '/',
       
       meta:{
         
-        title:'首页'
+        title:/Android|webOS|iPhone|iPod|BlackBerry/i.test(navigator.userAgent) ? '中设调查 - - 首页' : '提示页'
         
       },
   
-      component:() =>import('../pages/getUserInfo.vue')
+      component:() => /Android|webOS|iPhone|iPod|BlackBerry/i.test(navigator.userAgent) ? import('../pages/getUserInfo.vue') :  import('../pages/hintTem.vue')
       
     },
     {
@@ -34,7 +34,20 @@ export default new Router({
     
       },
     
-      component:() =>import('../pages/answerSheet1.vue')
+      component:() =>import('../pages/answerSheet.vue')
+    
+    },
+    {
+    
+      path:'/hintTem',
+    
+      meta:{
+      
+        title:'中设调查 - - 提示页'
+      
+      },
+    
+      component:() =>import('../pages/hintTem.vue')
     
     },
   

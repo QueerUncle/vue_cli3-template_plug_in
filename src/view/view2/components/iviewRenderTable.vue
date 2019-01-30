@@ -6,6 +6,8 @@
 
     <Table border :columns="columns7" :data="data6"></Table>
 
+    <pop :flag = flag :data = data @close = "close"></pop>
+
   </div>
 </template>
 
@@ -13,6 +15,9 @@
     export default {
         data () {
             return {
+
+              flag:false,
+              data:null,
 
               columns7: [
                 {
@@ -31,7 +36,13 @@
                 },
                 {
                   title: 'Age',
-                  key: 'age'
+                  key: 'ages',//对应数据中要渲染的字段名称 (没有render,默认匹配数据中的对应key的字段)
+//                  render: (h, params) => {
+//                    //改变数据渲染的值，例如：默认为ages,现在改为age
+//                    return h('span',params.row.age)
+//
+//                  }
+
                 },
                 {
                   title: 'Address',
@@ -80,10 +91,10 @@
                         },
                         on: {
                           click: () => {
-                            this.test(params)
+                            this.edit(params)
                           }
                         }
-                      }, '测试')
+                      }, '修改')
                     ]);
                   }
                 }
@@ -92,26 +103,35 @@
                 {
                   name: 'John Brown',
                   age: 18,
+                  ages: 180,
                   address: 'New York No. 1 Lake Park'
                 },
                 {
                   name: 'Jim Green',
                   age: 24,
+                  ages: 240,
                   address: 'London No. 1 Lake Park'
                 },
                 {
                   name: 'Joe Black',
                   age: 30,
+                  ages: 300,
                   address: 'Sydney No. 1 Lake Park'
                 },
                 {
                   name: 'Jon Snow',
                   age: 26,
+                  ages: 260,
                   address: 'Ottawa No. 2 Lake Park'
                 }
               ],
               count:0
             }
+        },
+        components:{
+
+            pop: () => import('./childerComponents/Pop.vue')
+
         },
         mounted () {
 
@@ -144,6 +164,8 @@
 
                 age: this.count++,
 
+                ages: this.count++,
+
                 address: 'Sydney No. 1 Lake Park'+this.count
 
               };
@@ -151,6 +173,26 @@
             this.data6.splice(params.index+1,0,obj);
 
             this.count++;
+
+          },
+
+          edit(params){
+
+              this.data = params;
+
+              this.flag = true;
+
+          },
+          close(t,p,d){
+
+
+              if(t){
+
+                p.row.name = d;
+
+              }
+
+              this.flag = false;
 
           }
 

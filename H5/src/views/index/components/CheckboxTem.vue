@@ -6,17 +6,51 @@
 
     <div class = "Radio-test-questions-title">
 
-      <van-cell style = "font-size: 16px;" :value="data.subscript+'、'+data.title" />
+      <!--<van-cell style = "font-size: 16px;" >{{data.subscript+'、'+data.title}}（最多选择{{data.max}}个，最少选择{{dara.min}}个）</van-cell>-->
+
+      <p  style = "margin-bottom: 10px;padding: 10px 10px;border-bottom: 1px solid #ebedf0;font-size: 16px;">标题：{{data.title}}</p>
 
     </div>
 
     <div class = "checkbox-test-questions-operation">
 
-      <van-checkbox-group v-model="data.value">
+      <van-checkbox-group v-model="data.value" :max="data.max">
 
-        <van-checkbox v-for="(item, index) in data.option" :key="index+1" :name="item">{{item.title}}</van-checkbox>
+        <van-checkbox v-for="(item, index) in data.content" :key="index+1" :name="item">{{item.title}}</van-checkbox>
 
       </van-checkbox-group>
+
+    </div>
+
+    <div class = "Remarks-div">
+
+      <van-cell-group>
+
+        <van-field
+
+          v-model="data.remarks.value"
+
+          type="textarea"
+
+          label="入选理由"
+
+          placeholder="请输入留言"
+
+          rows="1"
+
+          :error-message ="data.remarks.message"
+
+          @blur = "RemarksOnBlur(data.remarks)"
+
+          :autosize = "{maxHeight:200,minHeight:50}"
+
+          :required = "data.remarks.force_explanation ? true : false "
+
+        >
+
+        </van-field>
+
+      </van-cell-group>
 
     </div>
 
@@ -27,7 +61,7 @@
 <script>
     export default {
 
-        props:['data'],
+        props:['data','overallLnegth'],
 
         data () {
 
@@ -36,7 +70,40 @@
         mounted () {
 
         },
-        methods: {}
+        methods: {
+          //富文本失去焦点
+          RemarksOnBlur(obj){
+
+            obj.value.replace(/\s+/g,"");
+
+            if(!obj.value){
+
+              obj.message = "格式错误！";
+
+              return
+
+            }else{
+
+              if(this.$fs.isChinese(obj.value)){
+
+                obj.message = "格式错误！";
+
+                return
+
+              }else{
+
+                obj.message = "";
+
+                return
+
+              }
+
+            }
+
+          },
+
+        }
+
     }
 </script>
 
@@ -68,4 +135,11 @@
   }
 
 }
+  .Remarks-div{
+
+    margin-top: 30px;
+
+    padding: 0 10px;
+
+  }
 </style>

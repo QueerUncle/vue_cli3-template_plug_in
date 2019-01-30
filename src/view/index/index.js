@@ -25,7 +25,7 @@ import Http from '../../axios'
 
 Vue.use(iView);
 
-Vue.use(Http,['qwer','$cancel']);
+Vue.use(Http,['$http','$cancel']);
 
 Vue.config.productionTip = false;
 

@@ -121,6 +121,27 @@ export default  new Router({
       component: () => import('../components/chdckedBoxTemplate')
     
     },
+    {
+    
+      path:'/elementModel',
+    
+      component: () => import('../components/elementModel')
+    
+    },
+    {
+    
+      path:'/iviewUpload',
+    
+      component: () => import('../components/iviewUpload')
+    
+    },
+    {
+    
+      path:'/elementTable',
+    
+      component: () => import('../components/elementTable')
+    
+    }
     
   ]
   

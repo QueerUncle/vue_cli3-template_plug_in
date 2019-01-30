@@ -22,6 +22,10 @@
       <a href="javascript:;" @click = "linkTo('/cbimtree')">cbimtree</a>
       <a href="javascript:;" @click = "linkTo('/iviewRenderTable')">iviewRenderTable</a>
       <a href="javascript:;" @click = "linkTo('/chdckedBoxTemplate')">chdckedBoxTemplate</a>
+      <br/>
+      <a href="javascript:;" @click = "linkTo('/elementModel')">elementModel</a>
+      <a href="javascript:;" @click = "linkTo('/iviewUpload')">iviewUpload</a>
+      <a href="javascript:;" @click = "linkTo('/elementTable')">elementTable</a>
       <router-view></router-view>
     </div>
 </template>

@@ -75,12 +75,18 @@ Http.interceptors.request.use (
 Http.interceptors.response.use (
   
   (response) => {
-  
-    console.log(response)
-  
+    
     removePending(response.config);
+    
+    if(response.data.code == 200){
   
-    return response.data;
+      return response.data;
+  
+    }else{
+  
+      return Promise.reject (response);
+      
+    }
     
   }, (err) => {
   

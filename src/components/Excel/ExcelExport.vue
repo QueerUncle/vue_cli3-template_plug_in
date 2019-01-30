@@ -322,6 +322,8 @@
           //导出xlsx
           downloadMater (Ary){
 
+              console.log(Ary,'AryAryAryAryAryAryAryAryAryAryAryAryAryAryAryAryAryAryAryAryAryAryAryAryAryAryAryAryAryAryAry')
+
             // const defaultCellStyle =  { font: { name: "Verdana", sz: 11, color: "FF00FF88"}, fill: {fgColor: {rgb: "FFFFAA00"}}};
 
             // const wopts = { bookType:'xlsx', bookSST:false, type:'binary', defaultCellStyle: defaultCellStyle, showGridLines: false};

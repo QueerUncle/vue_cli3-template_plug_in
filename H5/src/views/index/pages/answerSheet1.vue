@@ -4,23 +4,33 @@
 <template>
   <div class = "answerSheet">
 
-    <van-swipe v-if = "result.length>0" ref = "Swipe" @change = "onChange" :loop = "false" :show-indicators = "false" :touchable = "false">
+    <transition name="fade">
 
-      <van-swipe-item  v-for = "(item,index) in result" :key = "index+1">
+      <Text-tem v-if="data!=null && type == 'text'"  :data = "data"></Text-tem>
 
-        <Text-tem v-if="item!=null && item.type == 'text'"  :data = "item"></Text-tem>
+      <Radio-tem v-if="data!=null && type == 'radio'" :data = "data"></Radio-tem>
 
-        <Radio-tem v-if="item!=null && item.type == 'radio'" :data = "item"></Radio-tem>
+      <Checkbox-tem v-if="data!=null && type == 'checkbox'" :data = "data"></Checkbox-tem>
 
-        <Checkbox-tem v-if="item!=null && item.type == 'checkbox'" :data = "item"></Checkbox-tem>
+    </transition>
 
-      </van-swipe-item>
+    <!--<transition v-if="data!=null && data.type == 'text'" name="van-fade">-->
 
-    </van-swipe>
+      <!--<Text-tem :data = "data"></Text-tem>-->
 
-    <van-button v-if = "result.length>0 && SwipeIndex< result.length-1" class = "btn" block type="primary" size="normal" @click = "next">下一题</van-button>
+    <!--</transition>-->
+    <!--<transition v-if="data!=null && data.type == 'radio'" name="van-fade">-->
 
-    <van-button v-if = "result.length>0 && !(SwipeIndex< result.length-1)" class = "btn" block type="primary" size="normal" @click = "next">查看答案</van-button>
+      <!--<Radio-tem  :data = "data"></Radio-tem>-->
+
+    <!--</transition>-->
+    <!--<transition v-if="data!=null && data.type == 'checkbox'" name="van-fade">-->
+
+      <!--<Checkbox-tem  :data = "data"></Checkbox-tem>-->
+
+    <!--</transition>-->
+
+    <van-button class = "btn" block type="primary" size="normal" @click = "next">下一题</van-button>
 
   </div>
 
@@ -138,9 +148,9 @@
 
                     },
 
-                    max:1,
+                    max:5,
 
-                    min:1
+                    min:5
 
                   },
                   {
@@ -185,14 +195,6 @@
                         checked:false
 
                       },
-                      {
-                        id:'3-5',
-
-                        title:'哈密瓜',
-
-                        checked:false
-
-                      },
 
                     ],
 
@@ -218,18 +220,20 @@
 
                 ],
 
-                SwipeIndex:0
+                data:null,
+
+                type:null,
+
 
             }
-
         },
         components:{
 
-          TextTem:() => import('../components/TextTem'),
+          TextTem:() => import('./TextTem'),
 
-          RadioTem:() => import('../components/RadioTem'),
+          RadioTem:() => import('./RadioTem'),
 
-          CheckboxTem:() => import('../components/CheckboxTem')
+          CheckboxTem:() => import('./CheckboxTem')
 
         },
         mounted () {
@@ -243,142 +247,43 @@
 
               this.result.forEach((i,v) =>{
 
-                for(let t = 0,Maxt = i.max; t< Maxt ;t++){
+                  for(let t = 0,Maxt = i.max; t< Maxt ;t++){
 
-                  if(i.type == 'text'){
-
-                    i.value.push({title:'',message:''});
-
-                  }else if(i.type == 'radio'){
-
-                    i.value.push({radio:''});
-
+                      i.value.push({id:'',title:''});
 
                   }
 
-                }
-
               });
 
-//             this.result = [];
+              this.type = this.result[0].type;
 
-            if(this.result.length<=0){
+              this.data = this.result[0];
 
-              this.$dialog.alert({
+          },
 
-                message: '服务器错误！'
-
-              }).then(() => {
+            linkTo(){
 
                 this.$router.push('/')
 
-              });
-
-            }
-
-          },
-
-          linkTo(){
-
-              this.$router.push('/')
-
-          },
-
-          onChange(val){
-
-            this.SwipeIndex = val;
-
-          },
-
+            },
           next(){
 
-              console.log(this.result[this.SwipeIndex]);
+              if(this.data.subscript < this.result.length){
 
-              let flag = this.verification(this.result[this.SwipeIndex]);
+                  this.type = this.result[this.data.subscript].type;
 
-              if(flag){
+                  setTimeout(() =>{
 
-                if(this.SwipeIndex<this.result.length-1){
+                    this.data = this.result[this.data.subscript];
 
-                  this.SwipeIndex++;
+                  },1000);
 
-                  this.$refs.Swipe.swipeTo(this.SwipeIndex)
-
-                }else{
-
-                  console.log(this.result)
-
-                }
 
               }else{
 
-                this.verification(this.result[this.SwipeIndex]);
+
 
               }
-
-          },
-
-          verification(obj){
-
-              let flag = true;
-
-              let Ary = obj.value;
-
-              if(!Ary){
-
-                flag = false;
-
-              }else{
-
-                if(obj.type == "text"){
-
-                  let NewAry = [];
-
-                  Ary.forEach((i,v) =>{
-
-                      if(i.title!=="" && i.message==""){
-
-                        NewAry.push(i);
-
-                      }
-
-                  });
-
-                  if(NewAry.length<obj.min || NewAry.length>obj.max){
-
-                    flag = false;
-
-                    this.$toast(`该项最少需要填${this.result[this.SwipeIndex].min}项,最多能填${this.result[this.SwipeIndex].max}项！`);
-
-                  }
-
-                }else if(obj.type == "radio"){
-
-                    let radio = obj.value[0].radio;
-
-                    if(radio == ""){
-
-                      flag = false;
-
-                      this.$toast(`该项最少需要选择${this.result[this.SwipeIndex].min}项,最多选择${this.result[this.SwipeIndex].max}项！`);
-
-                    }
-
-                }else {
-
-                  if(Ary.length<obj.min || Ary.length>obj.max){
-
-                    flag = false;
-
-                    this.$toast(`该项最少需要选择${this.result[this.SwipeIndex].min}项,最多选择${this.result[this.SwipeIndex].max}项！`);
-
-                  }
-
-                }
-
-              }
-
-              return flag;
 
           }
 

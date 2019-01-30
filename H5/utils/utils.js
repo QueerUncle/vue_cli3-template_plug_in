@@ -9,7 +9,7 @@ const path = require('path');
 
 module.exports = {
   
-  getPages:() =>{
+  getPages(prefix){
     
     const globPathHtml = ['./src/**/index.html']; // 入口模板正则
     
@@ -34,7 +34,9 @@ module.exports = {
       return newAry;
     
     };
-    
+  
+    prefix = prefix ? prefix : '' ;
+  
     let pages = {};
 
     let confDemo = {};
@@ -65,7 +67,7 @@ module.exports = {
     
           };
 
-          confDemo[data.filename] = `${data.filename}.html`;
+          confDemo[data.filename] = `${prefix}${data.filename}.html`;
           
         }
         
@@ -79,7 +81,7 @@ module.exports = {
       
       if(publicxists){
         
-        fs.writeFile(path,JSON.stringify({data:confDemo}),'utf8',(error) =>{
+        fs.writeFile(path,JSON.stringify({code:200,message:"",success:true,data:confDemo}),'utf8',(error) =>{
     
           if(error) return console.log(error);
           
@@ -91,7 +93,7 @@ module.exports = {
     
           if (err) return console.error(err);
           
-          fs.writeFile(path,JSON.stringify(confDemo),'utf8',(error) =>{
+          fs.writeFile(path,JSON.stringify({code:200,message:"",success:true,data:confDemo}),'utf8',(error) =>{
       
             if(error) return console.log(error);
             

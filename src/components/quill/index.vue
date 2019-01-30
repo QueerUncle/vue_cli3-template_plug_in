@@ -4,20 +4,9 @@
 <template>
   <div class = "quill">
     <div class = "quill_Content">
-      <Upload
-        multiple
-        accept="image/*"
-        :headers="header"
-        :show-file-list="false"
-        :action="serverUrl"
-        :before-upload="beforeUpload"
-        :on-success="uploadSuccess"
-        :on-error="uploadError"
-        name = "data"
-        class = "avatar-uploader"
-      >
-        <!--<Button icon="ios-cloud-upload-outline">Upload files</Button>-->
-      </Upload>
+      <div class = "avatar-uploader">
+        <input :multiple="multiplefn"  @change="importFile($event)" type="file" accept="image/*">
+      </div>
       <quill-editor
         v-model="content"
         ref="myQuillEditor"
@@ -29,7 +18,7 @@
       >
       </quill-editor>
     </div>
-    <div class = "tip">
+    <div class = "tip" v-if="MaxWordsFn">
 
       <p style="padding-left: 10px;">还可以输入{{tipNum}}个字</p>
 
@@ -93,12 +82,13 @@
   Quill.register(Font, true);
 
   //quill图片可拖拽上传
-  import { ImageDrop } from 'quill-image-drop-module';
-
-  Quill.register('modules/imageDrop', ImageDrop);
+//  import { ImageDrop } from 'quill-image-drop-module';
+//
+//  Quill.register('modules/imageDrop', ImageDrop);
 
    export default {
 
+      props:['data','toolbar','MaxWords','incident','multiple'],
       data() {
 
         return {
@@ -123,7 +113,7 @@
 
             modules: {
 
-              imageDrop:true,
+//              imageDrop:true,
 
               toolbar: {
 
@@ -169,21 +159,14 @@
 
           },
 
-          serverUrl:'https://test-tools.cbim.org.cn/api/upload/v1/upload',  // 这里写你要上传的图片服务器地址
-
-          header: {
-
-            Authorization: "Bearer "+'29047046a1e3659a6ffe23dfe0b29a8520752134354e8e15b5dc18232c852e20',
-
-          }
-
         }
 
       },
-       components: {
-         quillEditor
-       },
-      props:['masg','toolbar','MaxWords','incident'],
+      components: {
+
+       quillEditor
+
+      },
       computed: {
 
        quill() {
@@ -210,11 +193,19 @@
 
        MaxWordsFn(){
 
-         return Number(this.$props.MaxWords)+1
+           let t = false;
+
+           if(this.$props.MaxWords){
+
+             t = Number(this.$props.MaxWords)+1
+
+           }
+
+         return t
 
        },
 
-        incidentFn(){
+       incidentFn(){
 
          let incident = this.$props.incident;
 
@@ -272,15 +263,26 @@
 
          return obj
 
-        }
+        },
+
+       multiplefn(){
+
+           let flag = false;
+
+           if(this.$props.multiple!=undefined){
+
+               flag = 'multiple';
+
+           }
+
+           return flag
+
+       }
 
      },
       mounted(){
 
-        this.toolbarFn;
-
-        this.tipNum = this.MaxWordsFn-1;
-
+        this.initialize();
         //监听文字变化
         this.quill.on('text-change',(delta, oldDelta, source) =>{
 
@@ -291,14 +293,8 @@
           // console.log(source)
 
         });
-
         //监听文字第一次变化
-        this.quill.once('text-change',(e) =>{
-
-          // console.log(e,'woshi diyic')
-
-        });
-
+        this.quill.once('text-change',(e) =>{});
         //监听富文本框发生变化
         this.quill.on('editor-change', function(eventName, ...args) {
 
@@ -317,6 +313,58 @@
       },
       methods: {
 
+        //初始化
+        initialize(){
+
+            if(this.$props.data){
+
+              this.content =this.$props.data;
+
+              setTimeout(() =>{
+
+                this.quill.setSelection(this.quill.getLength())  // 调整光标到最后
+
+              },0)
+
+            };
+
+            this.toolbarFn;
+
+            this.tipNum = this.MaxWordsFn ? this.MaxWordsFn-1 : false ;
+
+        },
+        //input发生改变的时候
+        importFile(e){
+
+          this.$Spin.show();
+
+          let files = e.target.files;
+
+          this.$parent.upload(files,callBack =>{
+
+            this.$Spin.hide();
+
+            if(callBack.success && callBack.data && callBack.data.length>0){
+
+              for(let i of callBack.data){
+
+                let length = this.quill.getSelection().index; // 获取光标所在位置
+
+                this.quill.insertEmbed(length, 'image',i,{"width":"100%"}); // 插入图片  res.url为服务器返回的图片地址
+
+                this.quill.setSelection(length + 1)  // 调整光标到最后
+
+              }
+
+            }else{
+
+              this.$Message.error('图片插入失败')
+
+            }
+
+          });
+
+        },
         // 关闭弹窗
         close_Pop(){
 
@@ -346,55 +394,17 @@
         //富文本内容发生改变
         onEditorChange(e,strValue,decimalNum){
 
-          e.quill.deleteText(decimalNum-1,1,strValue);//保留 strValue 的 前 decimalNum 位字符，
+          if(decimalNum){
 
-          this.tipNum = decimalNum- this.quill.getLength();
+            e.quill.deleteText(decimalNum-1,1,strValue);//保留 strValue 的 前 decimalNum 位字符，
+
+            this.tipNum = decimalNum- this.quill.getLength();
+
+          }
 
           this.disposeIMGMethod();
 
           if(this.incidentFn && this.incidentFn.onChange){this.$emit(this.incidentFn.onChange,this.content)}
-
-        },
-        //上传文件之间
-        beforeUpload(res,file) {
-
-          console.log(res,file)
-
-          // 显示loading动画
-          this.$Spin.show();
-
-        },
-        //图片上传成功
-        uploadSuccess(res, file) {
-
-          // loading动画消失
-          this.$Spin.hide();
-
-          let quill = this.$refs.myQuillEditor.quill;
-
-          if ( res.data ) {
-
-            let length = this.quill.getSelection().index; // 获取光标所在位置
-
-            let url = `https://test-tools.cbim.org.cn/api/download/v1/download?fileId=${res.data}`;
-
-            this.quill.insertEmbed(length, 'image',url,{"width":"100%"}); // 插入图片  res.url为服务器返回的图片地址
-
-            this.quill.setSelection(length + 1)  // 调整光标到最后
-
-          } else {
-
-            this.$Message.error('图片插入失败')
-
-          }
-
-        },
-        // 图片上传失败
-        uploadError() {
-
-          this.$Spin.hide();   // loading动画消失
-
-          this.$Message.error('图片插入失败1');
 
         },
         //获取富文本内容HTML
@@ -495,7 +505,8 @@
         //获取用户选中的鼠标位置
         getSelection(){
 
-          console.log(this.quill.getSelection())
+          console.log(this.quill)
+          console.log(this.quill.getSelection)
 
           return this.quill.getSelection()
 
@@ -614,31 +625,6 @@
           })
 
         },
-        htmlEncode(str){
-          var s = "";
-          if(str == null) str = "";
-          if(str.length == 0) return "";
-          s = str.replace(/&/g,"&amp;");
-          s = s.replace(/</g,"&lt;");
-          s = s.replace(/>/g,"&gt;");
-          s = s.replace(/ /g,"&nbsp;");
-          s = s.replace(/\'/g,"&#39;");
-          s = s.replace(/\"/g,"&quot;");
-          return s;
-        },
-
-        htmlDecode(str){
-          var s = "";
-          if(str == null) str = "";
-          if(str.length == 0) return "";
-          s = str.replace(/&amp;/g,"&");
-          s = s.replace(/&lt;/g,"<");
-          s = s.replace(/&gt;/g,">");
-          s = s.replace(/&nbsp;/g," ");
-          s = s.replace(/&#39;/g,"\'");
-          s = s.replace(/&quot;/g,"\"");
-          return s;
-        }
 
       }
 

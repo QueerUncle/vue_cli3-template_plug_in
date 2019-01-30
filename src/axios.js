@@ -41,7 +41,7 @@ const Http = axios.create({
   
   baseURL: baseUrl,
   
-  withCredentials: true,
+  withCredentials: false,
   
   headers: headers,
   

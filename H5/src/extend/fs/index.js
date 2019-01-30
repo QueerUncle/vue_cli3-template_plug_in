@@ -213,7 +213,18 @@ const fs = {
     
     return str;
     
-  }
+  },
+  
+  isChinese(value){
+  
+    let t = value;
+  
+    let reg = new RegExp("^[a-zA-Z]+$");
+  
+    return reg.test(t);
+    
+  },
+
   
 };
 
