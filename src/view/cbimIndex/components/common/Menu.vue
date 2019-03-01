@@ -9,7 +9,7 @@
 
       <div class = "IconWarp" style="height: 100%;" :class = " isCollapsed ? 'firstActive' : 'firstActiveFalse'" >
 
-        <div class = "firstDiv" @mouseenter = "onmouseenter(index_first)" @mouseleave = "onmouseleave" :title = " isCollapsed ? item.name  : '' " v-for="(item,index_first) in MenuDataFn" :class = "index_first == active || hover == index_first ? `active${Colors}` : ''" @click = "transformModality(item,index_first,MenuDataFn)">
+        <div class = "firstDiv" @mouseenter = "onmouseenter(index_first)" @mouseleave = "onmouseleave" :title = " isCollapsed ? item.title  : '' " v-for="(item,index_first) in MenuDataFn" :class = "index_first == active || hover == index_first ? `active${Colors}` : ''" @click = "transformModality(item,index_first,MenuDataFn)">
 
           <div style="height: 100%;width: 100%;">
 
@@ -25,9 +25,9 @@
 
         <div @mouseenter = "onmouseenter(index_first)"  @mouseleave = "onmouseleave" :class = " hover == index_first ? `active${Colors}`: ``" v-if="!isCollapsed"   v-for="(item,index_first) in MenuDataFn"  @click = "transformModality(item,index_first,MenuDataFn)">
 
-          <div :title = "item.name" class = "firstTitle" style="font-size: 14px; color: white;border-bottom: none">
+          <div :title = "item.title" class = "firstTitle" style="font-size: 14px; color: white;border-bottom: none">
 
-            <span>{{item.name}}</span>
+            <span>{{item.title}}</span>
 
           </div>
 
@@ -37,7 +37,7 @@
 
           <div v-if=" active < MenuDataFn.length " class = "firstTitle" style="font-size: 14px;cursor:auto">
 
-            <span>{{MenuDataFn[active].name}}</span>
+            <span>{{MenuDataFn[active].title}}</span>
 
             <Icon v-if = "isCollapsed" style = "margin-left:6px;cursor: pointer;" @click.native="collapsedSider" class = "rotateIcon" type="md-menu" size="17"></Icon>
 
@@ -49,7 +49,7 @@
 
               <div style="overflow: hidden">
 
-                <span style="float: left">{{item.name}}</span>
+                <span style="float: left">{{item.title}}</span>
 
                 <span style="float: right">
 
@@ -61,13 +61,13 @@
 
               </div>
 
-              <transition name="slide-fade">
+              <transition title="slide-fade">
 
                 <ul class = "threelevel" v-if="secondTouch == index_second" >
 
                   <li :class = " threeTouch == index ? `threeTouch${Colors}` : '' " v-for="(i,index) in item.children" @click.stop = 'changeThree(i,index,item.children)'>
 
-                    <span>{{i.name}}</span>
+                    <span>{{i.title}}</span>
 
                   </li>
 
@@ -139,15 +139,15 @@
 
                       if(MenuData[Coordinate[0]]){
 
-                        MenuData[Coordinate[0]].selected = true;
+                        MenuData[Coordinate[0]].select = true;
 
                         if(MenuData[Coordinate[0]].children[Coordinate[1]]){
 
-                          MenuData[Coordinate[0]].children[Coordinate[1]].selected = true;
+                          MenuData[Coordinate[0]].children[Coordinate[1]].select = true;
 
                           if(MenuData[Coordinate[0]].children[Coordinate[1]].children[Coordinate[2]]){
 
-                            MenuData[Coordinate[0]].children[Coordinate[1]].children[Coordinate[2]].selected = true;
+                            MenuData[Coordinate[0]].children[Coordinate[1]].children[Coordinate[2]].select = true;
 
                           }
 
@@ -262,9 +262,9 @@
           //点击二级菜单
           chnagesecond(item,index,parent){
 
-            item.selected = !item.selected;
+            item.select = !item.select;
 
-            this.secondTouch = item.children.length>0 ? item.selected ? index : null : index ;
+            this.secondTouch = item.children.length>0 ? item.select ? index : null : index ;
 
             this.linkTo(item,index);
 
@@ -362,7 +362,7 @@
           //处理非点击节点
           reset(parentAry,index){
 
-            parentAry.forEach((i,v) =>{if(v!=index){i.selected = false;}});
+            parentAry.forEach((i,v) =>{if(v!=index){i.select = false;}});
 
           }
 

@@ -26,6 +26,7 @@
       <a href="javascript:;" @click = "linkTo('/elementModel')">elementModel</a>
       <a href="javascript:;" @click = "linkTo('/iviewUpload')">iviewUpload</a>
       <a href="javascript:;" @click = "linkTo('/elementTable')">elementTable</a>
+      <a href="javascript:;" @click = "linkTo('/elementUIMume')">elementUIMume</a>
       <router-view></router-view>
     </div>
 </template>

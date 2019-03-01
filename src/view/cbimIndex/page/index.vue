@@ -32,19 +32,19 @@
 
                   icon:'icon-tongyongpeizhi',
 
-                  name:"项目驾驶舱",
+                  title:"项目驾驶舱",
 
-                  selected:false,
+                  select:false,
 
                   children:[
 
                     {
 
-                      name:'进度列表',
+                      title:'进度列表',
 
                       href:'',
 
-                      selected:false,
+                      select:false,
 
                       router:'',
 
@@ -52,11 +52,11 @@
 
                         {
 
-                          name:'主合同台账',
+                          title:'主合同台账',
 
                           router:'/pageIndexContent1',
 
-                          selected:false,
+                          select:false,
 
                           href:'',
 
@@ -65,11 +65,11 @@
                         },
                         {
 
-                          name:'补充合同',
+                          title:'补充合同',
 
                           router:'/pageIndexContent3',
 
-                          selected:false,
+                          select:false,
 
                           href:'',
 
@@ -78,11 +78,11 @@
                         },
                         {
 
-                          name:'费用台账',
+                          title:'费用台账',
 
                           router:'/pageIndexContent2',
 
-                          selected:false,
+                          select:false,
 
                           href:'',
 
@@ -91,11 +91,11 @@
                         },
                         {
 
-                          name:'几本台账',
+                          title:'几本台账',
 
                           router:'/pageIndexContent3',
 
-                          selected:false,
+                          select:false,
 
                           href:'',
 
@@ -108,11 +108,11 @@
                     },
                     {
 
-                      name:'是地方撒地方',
+                      title:'是地方撒地方',
 
                       href:'',
 
-                      selected:false,
+                      select:false,
 
                       router:'',
 
@@ -120,11 +120,11 @@
 
                         {
 
-                          name:'1',
+                          title:'1',
 
                           router:'/pageIndexContent2',
 
-                          selected:false,
+                          select:false,
 
                           href:'',
 
@@ -143,19 +143,19 @@
 
                   icon:'icon-yigoupingtai',
 
-                  name:"项目首页",
+                  title:"项目首页",
 
-                  selected:false,
+                  select:false,
 
                   children:[
 
                     {
 
-                      name:'首页列表',
+                      title:'首页列表',
 
                       href:'',
 
-                      selected:false,
+                      select:false,
 
                       router:'',
 
@@ -163,13 +163,13 @@
 
                         {
 
-                          name:'2',
+                          title:'2',
 
                           router:'',
 
                           href:'view2',
 
-                          selected:false,
+                          select:false,
 
                           children:[],
 
@@ -186,19 +186,19 @@
 
                   icon:'icon-xiaoxi',
 
-                  name:"多方协同",
+                  title:"多方协同",
 
-                  selected:false,
+                  select:false,
 
                   children:[
 
                     {
 
-                      name:'协同列表',
+                      title:'协同列表',
 
                       href:'',
 
-                      selected:false,
+                      select:false,
 
                       router:'',
 
@@ -206,11 +206,11 @@
 
                         {
 
-                          name:'3',
+                          title:'3',
 
                           router:'/pageIndexContent2',
 
-                          selected:false,
+                          select:false,
 
                           href:'',
 
@@ -229,19 +229,19 @@
 
                   icon:'icon-tongyongpeizhi',
 
-                  name:"香米设计",
+                  title:"香米设计",
 
-                  selected:false,
+                  select:false,
 
                   children:[
 
                     {
 
-                      name:'相聚列表',
+                      title:'相聚列表',
 
                       href:'',
 
-                      selected:false,
+                      select:false,
 
                       router:'',
 
@@ -249,11 +249,11 @@
 
                         {
 
-                          name:'4',
+                          title:'4',
 
                           router:'/pageIndexContent2',
 
-                          selected:false,
+                          select:false,
 
                           href:'',
 
@@ -272,19 +272,19 @@
 
                   icon:'icon-yigoupingtai',
 
-                  name:"项目招财",
+                  title:"项目招财",
 
-                  selected:false,
+                  select:false,
 
                   children:[
 
                     {
 
-                      name:'招财列表',
+                      title:'招财列表',
 
                       href:'',
 
-                      selected:false,
+                      select:false,
 
                       router:'',
 
@@ -292,11 +292,11 @@
 
                         {
 
-                          name:'5',
+                          title:'5',
 
                           router:'/pageIndexContent1',
 
-                          selected:false,
+                          select:false,
 
                           href:'',
 
@@ -315,19 +315,19 @@
 
                   icon:'icon-xiaoxi',
 
-                  name:"动态成本",
+                  title:"动态成本",
 
-                  selected:false,
+                  select:false,
 
                   children:[
 
                     {
 
-                      name:'成本列表',
+                      title:'成本列表',
 
                       href:'',
 
-                      selected:false,
+                      select:false,
 
                       router:'/pageIndexContent3',
 
@@ -336,11 +336,11 @@
                     },
                     {
 
-                      name:'成本列表2',
+                      title:'成本列表2',
 
                       href:'',
 
-                      selected:false,
+                      select:false,
 
                       router:'/pageIndexContent2',
 

@@ -141,7 +141,15 @@ export default  new Router({
     
       component: () => import('../components/elementTable')
     
+    },
+    {
+    
+      path:'/elementUIMume',
+    
+      component: () => import('../components/elementUIMume')
+    
     }
+    
     
   ]
   

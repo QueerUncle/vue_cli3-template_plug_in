@@ -61,6 +61,7 @@
 
             }
         },
+
         components:{
 
           ExcelExportPop
@@ -116,11 +117,14 @@
           }
 
         },
+
         mounted() {},
 
         methods: {
           //点击导出按钮
           ExportFile(ArrayData){
+
+            this.SheetsAry = [];
 
             let flag = false;
 
@@ -290,7 +294,7 @@
 
               }
 
-              this.downloadMater(SheetAry)
+              this.downloadMater(SheetAry);
 
               this.ExcelPopFlag = false;
 

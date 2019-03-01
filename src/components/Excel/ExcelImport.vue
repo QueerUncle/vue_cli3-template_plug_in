@@ -158,9 +158,11 @@
 
             }else{
 
-              this.$emit("on-clear-click",true);
-
               this.ExcelPopFlag = false;
+
+//              this.ExcelData = [];
+
+              this.$emit("on-clear-click",true);
 
             }
 
@@ -235,125 +237,135 @@
             }
             let f = obj.files[0];
 
-            $t.fileName = f.name;
+            if(f.type == 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' || f.type == 'application/vnd.ms-excel') {
 
-            $t.fileSuffix = $t.fileName.substring($t.fileName.lastIndexOf(".")+1,$t.fileName.length);
+              $t.fileName = f.name;
 
-            $t.fileSize = f.size;
+              $t.fileSuffix = $t.fileName.substring($t.fileName.lastIndexOf(".") + 1, $t.fileName.length);
 
-            $t.fileType = f.type;
+              $t.fileSize = f.size;
 
-            let fileReader = new FileReader();
+              $t.fileType = f.type;
 
-            //读取开始时
-            fileReader.onloadstart = function(e){
+              let fileReader = new FileReader();
 
-              console.log('开始读取文件……')
+              //读取开始时
+              fileReader.onloadstart = function (e) {
 
-            };
+                console.log('开始读取文件……')
 
-            //读取成功时
-            fileReader.onload = function(e) {
+              };
 
-              console.log("读取完毕，解析中……")
+              //读取成功时
+              fileReader.onload = function (e) {
 
-              try{
+                console.log("读取完毕，解析中……")
 
-                let data = e.target.result;
+                try {
 
-                if (this.rABS) {
+                  let data = e.target.result;
 
-                  workbook = XLSX.read(btoa(this.fixdata(data)), {
+                  if (this.rABS) {
 
-                    // 手动转化
-                    type: "base64"
+                    workbook = XLSX.read(btoa(this.fixdata(data)), {
 
-                  });
+                      // 手动转化
+                      type: "base64"
+
+                    });
 
 
-                }else{
+                  } else {
 
-                  workbook =$t.wb = XLSX.read(data, {
+                    workbook = $t.wb = XLSX.read(data, {
 
-                    type: "binary"
+                      type: "binary"
 
-                  });
-
-                }
-
-              } catch (er) {
-
-                $t.$Spin.hide();
-
-                $t.$Message.error("文件类型不正确,读取失败！");
-
-                return
-
-              }
-
-              console.log($t.wb,'奥术大师大所大所大所多');
-
-              // 遍历每张表读取
-              for (let sheet in workbook.Sheets) {
-
-                let sheetAry = [];
-
-                if (workbook.Sheets.hasOwnProperty(sheet)) {
-
-                  fromTo = workbook.Sheets[sheet]['!ref'];
-
-                  console.log(fromTo);
-
-                  if(fromTo!=undefined){
-
-                    sheetAry = XLSX.utils.sheet_to_json(workbook.Sheets[sheet]);
+                    });
 
                   }
 
-                  // break; // 如果只取第一张表，就取消注释这行
+                } catch (er) {
+
+                  $t.$Spin.hide();
+
+                  $t.$Message.error("文件格式错误,读取失败！");
+
+                  return
 
                 }
 
-                if(sheetAry.length>0){
+                // 遍历每张表读取
+                for (let sheet in workbook.Sheets) {
 
-                  persons.push(sheetAry)
+                  let sheetAry = [];
 
-                  SheetsAry.push({sheet:sheet})
+                  if (workbook.Sheets.hasOwnProperty(sheet)) {
+
+                    fromTo = workbook.Sheets[sheet]['!ref'];
+
+                    console.log(fromTo);
+
+                    if (fromTo != undefined) {
+
+                      sheetAry = XLSX.utils.sheet_to_json(workbook.Sheets[sheet]);
+
+                    }
+
+                    // break; // 如果只取第一张表，就取消注释这行
+
+                  }
+
+                  if (sheetAry.length > 0) {
+
+                    persons.push(sheetAry)
+
+                    SheetsAry.push({sheet: sheet})
+
+                  }
 
                 }
+
+                $t.primitiveExcelData = persons;
+
+                $t.SheetsAry = SheetsAry;
+
+                // let json = XLSX.utils.sheet_to_json($t.wb.Sheets[$t.wb.SheetNames[0]]);
+
+                // $t.primitiveExcelData = XLSX.utils.sheet_to_json($t.wb.Sheets[$t.wb.SheetNames[0]]);
+
+                $t.dealFile($t.primitiveExcelData); // analyzeData: 解析导入数据
+
+              };
+
+              //读取失败时
+              fileReader.onerror = function (er) {
+
+                console.log("文件读取失败……")
+
+                _this.$Spin.hide();
+
+                _this.$Message.error("表格中有错误数据");
 
               }
 
-              $t.primitiveExcelData = persons;
+              if (this.rABS) {
 
-              $t.SheetsAry = SheetsAry;
+                fileReader.readAsArrayBuffer(f);
 
-              // let json = XLSX.utils.sheet_to_json($t.wb.Sheets[$t.wb.SheetNames[0]]);
+              } else {
 
-              // $t.primitiveExcelData = XLSX.utils.sheet_to_json($t.wb.Sheets[$t.wb.SheetNames[0]]);
+                fileReader.readAsBinaryString(f);
 
-              $t.dealFile($t.primitiveExcelData); // analyzeData: 解析导入数据
+              }
 
-            };
+            }else{
 
-            //读取失败时
-            fileReader.onerror = function(er){
+              $t.$Spin.hide();
 
-              console.log("文件读取失败……")
+              $t.$Message.error("文件格式错误,读取失败！");
 
-              _this.$Spin.hide();
-
-              _this.$Message.error("表格中有错误数据");
-
-            }
-
-            if (this.rABS) {
-
-              fileReader.readAsArrayBuffer(f);
-
-            } else {
-
-              fileReader.readAsBinaryString(f);
+              return
 
             }
 

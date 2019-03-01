@@ -35,7 +35,11 @@
 
         <tr v-if="ExcelPopData.tBody" v-for="(item,index) in ExcelPopData.tBody">
 
-          <td title = "点击修改" :style = "{color:i.color}" contentEditable = "plaintext-only" @focus = "onFocus($event)"  @blur = onBlur(i,$event) v-for="(i,indexs) in item">{{i.name}}</td>
+          <td :ref ="'td-'+index+'-'+indexs" title = "点击修改" :style = "i.flag ? {color:i.color} : {backgroundColor:i.color}" style="color: #ffffff;" contentEditable = "plaintext-only" @focus = "onFocus($event)"  @blur = onBlur(i,$event,index,indexs) v-for="(i,indexs) in item">{{i.name}}</td>
+
+          <!--<td :ref ="'td-'+index+'-'+indexs" v-show="!i.flag" title = "点击修改" :style = "{backgroundColor:i.color}" style="color: #ffffff;" contentEditable = "plaintext-only" @focus = "onFocus($event)"  @blur = onBlur(i,$event,index,indexs) v-for="(i,indexs) in item">{{i.name}}</td>-->
+
+          <!--<td :ref ="'td-'+index+'-'+indexs" v-show="i.flag" title = "点击修改" :style = "{color:i.color}" contentEditable = "plaintext-only" @focus = "onFocus($event)"  @blur = onBlur(i,$event,index,indexs) v-for="(i,indexs) in item">{{i.name}}</td>-->
 
         </tr>
 
@@ -147,6 +151,8 @@
 
           this.ExcelPopData = this.propsExcelData[this.active];
 
+          console.log(this.ExcelPopData);
+
           this.ExcelPop = this.$props.ExcelPopFlag;
 
           this.SuccColor = this.$props.SuccessColor;
@@ -189,7 +195,7 @@
 
           },
           //失去焦点
-          onBlur(item,evn){
+          onBlur(item,evn,index,indexs){
 
             evn.target.style.cursor = "pointer"
 
@@ -217,29 +223,93 @@
 
               sheet:item.sheet,
 
-            }
+            };
 
             let flag = fs.verifier(this.ExcelRegulation,obj);
 
+            let h = `td-${index}-${indexs}`;
+
+            this.$refs[h][0].innerHTML = evn.target.innerHTML;
+
+            item.name = evn.target.innerHTML;
+
             if(flag){
 
-              evn.target.style.color = this.SuccColor;
+              this.$refs[h][0].style.backgroundColor = "";
 
-              item.color = this.SuccColor
+              this.$refs[h][0].style.color = this.SuccColor;
+
+              item.color = this.SuccColor;
 
               item.flag = true;
 
             }else{
 
-              evn.target.style.color = this.ErrColor;
+              this.$refs[h][0].style.backgroundColor = this.ErrColor;
 
-              item.color = this.ErrColor
+              this.$refs[h][0].style.color = '#ffffff';
+
+              item.color = this.ErrColor;
 
               item.flag = false;
 
             }
 
           },
+
+          //失去焦点
+//          onBlur(item,evn,index,indexs){
+//
+//            evn.target.style.cursor = "pointer"
+//
+//            if(evn.target.innerHTML!=null){
+//
+//              item.innerText = evn.target.innerHTML.replace(/\s+/g,"");
+//
+//              evn.target.innerHTML = evn.target.innerHTML.replace(/\s+/g,"");
+//
+//            }else{
+//
+//              item.innerText = evn.target.innerHTML;
+//
+//              evn.target.innerHTML = evn.target.innerHTML;
+//
+//            }
+//
+//            let obj = {
+//
+//              name:item.innerText,
+//
+//              col:item.col,
+//
+//              row:item.row,
+//
+//              sheet:item.sheet,
+//
+//            };
+//
+//            let flag = fs.verifier(this.ExcelRegulation,obj);
+//
+//            if(flag){
+//
+//              evn.target.style.color = this.SuccColor;
+//
+//              item.color = this.SuccColor
+//
+//              item.flag = true;
+//
+//            }else{
+//
+//              evn.target.style.color = this.ErrColor;
+//
+//              item.color = this.ErrColor
+//
+//              item.flag = false;
+//
+//            }
+//
+//          },
+
           //获取焦点
           onFocus(evn){
 

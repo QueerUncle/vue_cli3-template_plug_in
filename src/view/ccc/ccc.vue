@@ -74,21 +74,21 @@
 
                     },
 
-                    {
-
-                      index: 1,
-
-                      reg:[
-
-                        {
-
-                          name:"isEmail"
-
-                        }
-
-                      ]
-
-                    },
+//                    {
+//
+//                      index: 4,
+//
+//                      reg:[
+//
+//                        {
+//
+//                          name:"isEmail"
+//
+//                        }
+//
+//                      ]
+//
+//                    },
 
                   ]
 
@@ -133,7 +133,7 @@
 
           onClearClick(data){
 
-            console.log(data,'onClearClickonClearClickonClearClick')
+//            console.log(data,'onClearClickonClearClickonClearClick')
 
           },
           //下载
