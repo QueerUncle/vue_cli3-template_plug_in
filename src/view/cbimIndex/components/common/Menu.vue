@@ -266,7 +266,7 @@
 
             this.secondTouch = item.children.length>0 ? item.select ? index : null : index ;
 
-            this.linkTo(item,index);
+            this.linkTo(item,index,2);
 
             this.threeTouch = null;
 
@@ -278,19 +278,24 @@
 
             this.threeTouch = index;
 
-            this.linkTo(item,index);
+            this.linkTo(item,index,3);
 
             this.reset(parent,index);
 
           },
           //页面跳转
-          linkTo(item,index){
+          linkTo(item,index,num){
+
+            console.log(item,index);
 
             let path = "";
 
             let children = item.children;
 
             if(children.length<=0){
+
+              console.log(children,'children');
+
 
               if((item.href && item.router) || (item.href && !item.router)){
 
@@ -303,6 +308,16 @@
                   data:item,
 
                 };
+
+                if(num ==2){
+
+                  obj.MenuCoordinate = [this.active,index,0];
+
+                }else if(num == 3){
+
+                  obj.MenuCoordinate = [this.active,this.secondTouch,index];
+
+                }
 
                 this.$emit('on-toggle-page',obj);
 
@@ -320,9 +335,19 @@
 
                 };
 
+                if(num ==2){
+
+                  obj.MenuCoordinate = [this.active,index,0];
+
+                }else if(num == 3){
+
+                  obj.MenuCoordinate = [this.active,this.secondTouch,index];
+
+                }
+
                 this.$emit('on-toggle-page',obj);
 
-                this.$router.push({path:path,query:{ToIndex:this.actice,secondTouch:this.secondTouch,threeTouch:index}});
+                this.$router.push({path:path,query:{ToIndex:this.active,secondTouch:this.secondTouch,threeTouch:index}});
 
               }
 

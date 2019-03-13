@@ -148,8 +148,21 @@ export default  new Router({
     
       component: () => import('../components/elementUIMume')
     
-    }
+    },
+    {
     
+      path:'/iviewAutoComplete',
+    
+      component: () => import('../components/iviewAutoComplete')
+    
+    },
+    {
+    
+      path:'/forEachUpload',
+    
+      component: () => import('../components/forEachUpload')
+    
+    }
     
   ]
   

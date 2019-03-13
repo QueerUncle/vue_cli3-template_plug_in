@@ -31,7 +31,11 @@
 
 <script>
 
-  import XLSX from 'xlsx'
+  import XLSXs from 'xlsx'
+
+  import XLSX from 'xlsx-style'
+
+  import 'blob.js'
 
   import ExcelExportPop from './Pop/Excel_Export_Pop'
 
@@ -184,6 +188,24 @@
 
             if(flag){
 
+              ArrayData.forEach((i,v) =>{
+
+                i.bodyData.forEach((k,y) =>{
+
+                  for(let p in k){
+
+                    if(k[p] == undefined || k[p] == null){
+
+                      k[p] = "";
+
+                    }
+
+                  }
+
+                })
+
+              });
+
               this.ExportData = ArrayData;
 
               this.ExcelData = this.disposeData(this.ExportData);
@@ -244,7 +266,7 @@
 
                       col:c
 
-                    }
+                    };
 
                     arr.push(obj);
 
@@ -264,7 +286,7 @@
 
                   formattingHeadAry:formattingHeadAry
 
-                }
+                };
 
                 RETURNARRAY.push(obj);
 
@@ -294,7 +316,11 @@
 
               }
 
-              this.downloadMater(SheetAry);
+              //不带样式
+//              this.downloadMater(SheetAry);
+
+              //带样式
+              this.downloadMaterStyle(SheetAry);
 
               this.ExcelPopFlag = false;
 
@@ -326,21 +352,128 @@
           //导出xlsx
           downloadMater (Ary){
 
-              console.log(Ary,'AryAryAryAryAryAryAryAryAryAryAryAryAryAryAryAryAryAryAryAryAryAryAryAryAryAryAryAryAryAryAry')
-
-            // const defaultCellStyle =  { font: { name: "Verdana", sz: 11, color: "FF00FF88"}, fill: {fgColor: {rgb: "FFFFAA00"}}};
-
-            // const wopts = { bookType:'xlsx', bookSST:false, type:'binary', defaultCellStyle: defaultCellStyle, showGridLines: false};
-
             try{
 
-              // const wopts = { bookType:this.ExportTypeFn, bookSST:true, type:'binary'};
-              //
-              // const wb = { SheetNames: ['Sheet1'], Sheets: {}, Props: {} };
-              //
-              // wb.Sheets['Sheet1'] = XLSX.utils.json_to_sheet(Ary)
+              const wopts = { bookType:this.ExportTypeFn, bookSST:true, type:'binary',cellStyles: true,showGridLines: true};
 
-              const wopts = { bookType:this.ExportTypeFn, bookSST:true, type:'binary'};
+              const wb = { SheetNames: [], Sheets: {}, Props: {} };
+
+              if(Ary){
+
+                for(let i = 0 ;i < Ary.length; i++){
+
+                  wb.SheetNames.push('Sheet'+(i+1));
+
+                  wb.Sheets['Sheet'+(i+1)] = XLSXs.utils.json_to_sheet(Ary[i])
+
+                }
+
+              }
+
+              //创建二进制对象写入转换好的字节流
+
+              let tmpDown =  new Blob([this.s2ab(XLSX.write(wb, wopts))], { type: 'application/octet-stream' });
+
+              this.saveAs(tmpDown,this.ExportFileNameFn)
+
+            }
+            catch (er) {
+
+              console.log(er);
+
+              this.ExcelPopFlag = false;
+
+              this.$Message.error("下载格式设置错误,无法进行下载，请联系管理员！");
+
+            }
+
+          },
+          //导出xlsx--带样式
+          downloadMaterStyle (Ary){
+
+            const defaultCellStyle = {
+
+              alignment: {
+
+                vertical: "center",
+
+                wrapText:true,
+
+                horizontal:'center'
+
+              },
+
+              font: {
+
+                name: '宋体',
+
+                sz: 14,
+
+                bold: true,
+
+                vertAlign: true,
+
+              },
+
+              fill: {
+
+                bgColor: {
+
+                  indexed: 64
+
+                }
+
+              }
+
+            };
+
+            const specialStyle = {
+
+              alignment: {
+
+                vertical: "center",
+
+                wrapText:true,
+
+                horizontal:'center'
+
+              },
+
+              font: {
+
+                name:'宋体',
+
+                sz: 18,
+
+                bold: true,
+
+                color: {
+
+                  rgb:"ffffff"
+
+                }
+
+              },
+
+              fill: {
+
+                bgColor: {
+
+                  indexed: 64
+
+                },
+
+                fgColor: {
+
+                  rgb: "ff5000"
+
+                }
+
+              }
+            };
+            try{
+
+              const wopts = { bookType:this.ExportTypeFn, bookSST:true, type:'binary',cellStyles: true, defaultCellStyle:defaultCellStyle,showGridLines: true};
 
               const wb = { SheetNames: [], Sheets: {}, Props: {} };
 
@@ -350,16 +483,68 @@
 
                     wb.SheetNames.push('Sheet'+(i+1));
 
-                    wb.Sheets['Sheet'+(i+1)] = XLSX.utils.json_to_sheet(Ary[i])
+                    wb.Sheets['Sheet'+(i+1)] = XLSXs.utils.json_to_sheet(Ary[i])
 
                 }
 
               }
 
-              //创建二进制对象写入转换好的字节流
-              let tmpDown =  new Blob([this.s2ab(XLSX.write(wb, wopts))], { type: "application/octet-stream" })
+              let opt =500;
 
-              this.saveAs(tmpDown,this.ExportFileNameFn)
+              let colsWidthAry = [];
+
+              let rowHeight = [];
+
+              let Sheet = wb.Sheets;
+
+              for(let i in Sheet){
+
+                  for(let j in Sheet[i]){
+
+                      if(Sheet[i][j].t!=undefined && Sheet[i][j].v!=undefined){
+
+                          let s = j.match(/^[a-z|A-Z]+/gi);
+
+                          let n = j.match(/\d+$/gi);
+
+                          if(n<=2){
+
+                            Sheet[i][j].s = specialStyle;
+
+                            colsWidthAry.push({wpx:120});
+
+                            rowHeight.push({hpx:60})
+
+                          }else{
+
+                            Sheet[i][j].s = defaultCellStyle;
+
+                          }
+
+                      }else{
+
+                        opt = opt*Number(Sheet[i][j].split(':')[1].match(/\d+$/gi));
+
+                      }
+
+                  }
+
+                  Sheet[i]["!cols"] = colsWidthAry;
+
+                  Sheet[i]["!rows"] = rowHeight;
+
+              }
+
+              setTimeout(() =>{
+
+                //创建二进制对象写入转换好的字节流
+
+                let tmpDown =  new Blob([this.s2ab(XLSX.write(wb, wopts))], { type: 'application/octet-stream' });
+
+                this.saveAs(tmpDown,this.ExportFileNameFn)
+
+
+              },opt)
 
             }
             catch (er) {

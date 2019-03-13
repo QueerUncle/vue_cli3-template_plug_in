@@ -38,7 +38,7 @@ module.exports = {
   lintOnSave: false,
   // productionSourceMap：{ type:Bollean,default:true } 生产源映射
   // 如果您不需要生产时的源映射，那么将此设置为false可以加速生产构建
-  productionSourceMap: false,
+  productionSourceMap:false,
   // devServer:{type:Object} 3个属性host,port,https
   // 它支持webPack-dev-server的所有选项
   

@@ -27,6 +27,8 @@
       <a href="javascript:;" @click = "linkTo('/iviewUpload')">iviewUpload</a>
       <a href="javascript:;" @click = "linkTo('/elementTable')">elementTable</a>
       <a href="javascript:;" @click = "linkTo('/elementUIMume')">elementUIMume</a>
+      <a href="javascript:;" @click = "linkTo('/iviewAutoComplete')">iviewAutoComplete</a>
+      <a href="javascript:;" @click = "linkTo('/forEachUpload')">forEachUpload</a>
       <router-view></router-view>
     </div>
 </template>

@@ -46,6 +46,8 @@
         data () {
             return {
 
+
+
               succColor:"#000000",
 
               errColor:"pink",

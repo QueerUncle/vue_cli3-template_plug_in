@@ -27,7 +27,7 @@
     <!--<button @click = "setContents">设置内容HTML</button>-->
     <!--<button @click = "getRichTextTxt">获取内容TEXT</button>-->
     <!--<button @click = "setText">设置内容TEXT</button>-->
-    <!--<button @click = "setOnBlur">失去焦点</button>-->
+    <button @click = "setOnBlur">失去焦点</button>
     <!--<button @click = "setOnFocus">获得焦点</button>-->
     <!--<button @click = "clearRichText">清空文本</button>-->
     <!--<button @click = "getnowLength">获取文本长度</button>-->
@@ -45,13 +45,20 @@
     <!--<button @click = "getModule">获取模块</button>-->
     <!--<button @click = "FindQuillTmplate">寻找编辑器中模板</button>-->
     <!--<button @click = "insertText">向编辑器内插入文本</button>-->
-    <div class = "Quill_mask" v-if="imgClickFlag">
+    <!--<div class = "Quill_mask" v-if="imgClickFlag">-->
 
-      <img :src="clickImgSrc" alt="">
+      <!--<img :src="clickImgSrc" alt="">-->
 
-      <span @click = "close_Pop">X</span>
+      <!--<span @click = "close_Pop">X</span>-->
 
-    </div>
+    <!--</div>-->
+
+    <Modal title="View Image" v-model="imgClickFlag" @on-cancel="cancel" footer-hide>
+
+      <img :src="clickImgSrc" v-if="imgClickFlag" style="width: 100%">
+
+    </Modal>
+
   </div>
 
 </template>
@@ -88,7 +95,7 @@
 
    export default {
 
-      props:['data','toolbar','MaxWords','incident','multiple'],
+      props:['data','toolbar','MaxWords','incident','multiple','placeholder','upload'],
       data() {
 
         return {
@@ -105,7 +112,7 @@
 
           editorOption: {
 
-            placeholder: '',
+            placeholder: this.$props.placeholder ? this.$props.placeholder : '',
 
             imageResize: {},
 
@@ -114,6 +121,8 @@
             modules: {
 
 //              imageDrop:true,
+
+//              imageResize: {},
 
               toolbar: {
 
@@ -167,6 +176,40 @@
        quillEditor
 
       },
+     watch:{
+
+       data(n){
+
+         if(n){
+
+//           this.content =n;
+
+//           this.$refs.myQuillEditor.quill.setContents(this.$props.data)
+
+           this.$refs.myQuillEditor.quill.root.innerHTML=this.$props.data;
+
+
+//           this.$refs.myQuillEditor.quill.setText(this.$props.data)
+
+
+
+//           window.scrollTo(0,0);
+
+           setTimeout(() =>{
+
+//             this.quill.setSelection(this.quill.getLength())  // 调整光标到最后
+
+//             this.$refs.myQuillEditor.quill.enable(true);
+
+//             this.$refs.myQuillEditor.quill.blur();
+
+           },0);
+
+         };
+
+       }
+
+     },
       computed: {
 
        quill() {
@@ -313,16 +356,37 @@
       },
       methods: {
 
+        cancel(e){
+
+          this.imgClickFlag = false;
+
+          this.clickImgSrc = '';
+
+        },
         //初始化
         initialize(){
 
-            if(this.$props.data){
+          this.setOnBlur();
 
-              this.content =this.$props.data;
+          if(this.$props.data){
 
-              setTimeout(() =>{
+//              this.$refs.myQuillEditor.quill.setContents(this.$props.data)
 
-                this.quill.setSelection(this.quill.getLength())  // 调整光标到最后
+//              this.$refs.myQuillEditor.quill.setText(this.$props.data)
+
+                this.$refs.myQuillEditor.quill.root.innerHTML=this.$props.data;
+
+//              this.content =this.$props.data;
+
+//            window.scrollTo(0,0);
+
+            setTimeout(() =>{
+
+//                this.quill.setSelection(this.quill.getLength())  // 调整光标到最后
+
+//                this.$refs.myQuillEditor.quill.enable(true);
+
+//                this.$refs.myQuillEditor.quill.blur();
 
               },0)
 
@@ -340,35 +404,53 @@
 
           let files = e.target.files;
 
-          this.$parent.upload(files,callBack =>{
+          try{
 
-            this.$Spin.hide();
+              if(files.length){
 
-            if(callBack.success && callBack.data && callBack.data.length>0){
+                this.$props.upload(files,callBack =>{
 
-              for(let i of callBack.data){
+                  this.$Spin.hide();
 
-                let length = this.quill.getSelection().index; // 获取光标所在位置
+                  if(callBack.success && callBack.data && callBack.data.length>0){
 
-                this.quill.insertEmbed(length, 'image',i,{"width":"100%"}); // 插入图片  res.url为服务器返回的图片地址
+                    for(let i of callBack.data){
 
-                this.quill.setSelection(length + 1)  // 调整光标到最后
+                      let length = this.quill.getSelection().index; // 获取光标所在位置
+
+                      this.quill.insertEmbed(length, 'image',i,{"width":"100%"}); // 插入图片  res.url为服务器返回的图片地址
+
+                      this.quill.setSelection(length + 1)  // 调整光标到最后
+
+                    }
+
+                  }else{
+
+                    this.$Message.error('图片插入失败')
+
+                  }
+
+                });
+
+              }else{
+
+                this.$Spin.hide();
 
               }
 
-            }else{
+          } catch (er) {
 
-              this.$Message.error('图片插入失败')
+            this.$Spin.hide();
 
-            }
+            console.log(er);
 
-          });
+          }
 
         },
         // 关闭弹窗
         close_Pop(){
 
-          this.imgClickFlag = false;;
+          this.imgClickFlag = false;
 
           this.clickImgSrc = '';
 
