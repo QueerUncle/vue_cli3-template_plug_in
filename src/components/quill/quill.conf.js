@@ -31,7 +31,7 @@ const fonts = ['SimSun', 'SimHei','Microsoft-YaHei','KaiTi','FangSong','Arial','
 
 export const toolbarOptions  =[
   
-  ['bold', 'italic', 'underline'], // 加粗 斜体 下划线 删除线
+  ['bold', 'underline'], // 加粗 斜体 下划线 删除线
   
   [{ 'header': 1 }, { 'header': 2 }], // 1、2 级标题
   

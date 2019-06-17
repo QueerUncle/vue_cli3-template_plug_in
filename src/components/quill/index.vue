@@ -2,10 +2,10 @@
  -  2018/10/17  lize
  -->
 <template>
-  <div class = "quill">
+  <div id = "QUILLWAARP" class = "quill">
     <div class = "quill_Content">
       <div class = "avatar-uploader">
-        <input :multiple="multiplefn"  @change="importFile($event)" type="file" accept="image/*">
+        <input :class = "touchtime" :multiple="multiplefn"  @change="importFile($event)" type="file" accept="image/*">
       </div>
       <quill-editor
         v-model="content"
@@ -18,7 +18,7 @@
       >
       </quill-editor>
     </div>
-    <div class = "tip" v-if="MaxWordsFn">
+    <div class = "tip" v-if="MaxWordsFn && !isLook">
 
       <p style="padding-left: 10px;">还可以输入{{tipNum}}个字</p>
 
@@ -27,7 +27,7 @@
     <!--<button @click = "setContents">设置内容HTML</button>-->
     <!--<button @click = "getRichTextTxt">获取内容TEXT</button>-->
     <!--<button @click = "setText">设置内容TEXT</button>-->
-    <button @click = "setOnBlur">失去焦点</button>
+    <!--<button @click = "setOnBlur">失去焦点</button>-->
     <!--<button @click = "setOnFocus">获得焦点</button>-->
     <!--<button @click = "clearRichText">清空文本</button>-->
     <!--<button @click = "getnowLength">获取文本长度</button>-->
@@ -53,11 +53,13 @@
 
     <!--</div>-->
 
-    <Modal title="View Image" v-model="imgClickFlag" @on-cancel="cancel" footer-hide>
+    <Modal title="View Image from Quill" v-model="imgClickFlag" @on-cancel="cancel" footer-hide width="850px" draggable>
 
-      <img :src="clickImgSrc" v-if="imgClickFlag" style="width: 100%">
+      <img :src="clickImgSrc" v-if="imgClickFlag"  style="max-height: 750px;max-width:100%;margin: auto;">
 
     </Modal>
+
+    <div class = "mack"></div>
 
   </div>
 
@@ -65,9 +67,31 @@
 
 <script>
 
+//  (function(){
+//
+//    var script = document.createElement('script');
+//
+//    script.type = 'text/javascript';
+//
+//    script.src = '/node_modules/quill-image-resize-module/image-resize.min.js';
+//
+//    document.getElementsByTagName('head')[0].appendChild(script);
+//
+//    script.onload = (e) =>{
+//
+//        console.log(e,'我是eeeeeeeeeeeee')
+//
+//    }
+//
+//  })();
+
+//  var ImageResize = require('quill-image-resize-module');
+
   import { quillEditor } from "vue-quill-editor"; //调用编辑器
 
   import * as Quill from 'quill'  //引入编辑器
+
+  import ImageResize from 'quill-image-resize-module';
 
   import 'quill/dist/quill.core.css'
 
@@ -79,10 +103,14 @@
 
   import {toolbarOptions} from './quill.conf'
 
+//  import { ImageResize } from 'quill-image-resize-module';
+
   //quill编辑器的字体
   const fonts = ['SimSun', 'SimHei','Microsoft-YaHei','KaiTi','FangSong','Arial','Times-New-Roman','sans-serif'];
 
   const Font = Quill.import('formats/font');
+
+  import { Modal,Spin } from "iview";
 
   Font.whitelist = fonts; //将字体加入到白名单
 
@@ -93,9 +121,11 @@
 //
 //  Quill.register('modules/imageDrop', ImageDrop);
 
+  Quill.register('modules/imageResize',  ImageResize );
+
    export default {
 
-      props:['data','toolbar','MaxWords','incident','multiple','placeholder','upload'],
+      props:['data','toolbar','MaxWords','incident','multiple','placeholder','upload',"disabled"],
       data() {
 
         return {
@@ -110,11 +140,21 @@
 
           content: null,
 
+          isLook:false,
+
           editorOption: {
 
-            placeholder: this.$props.placeholder ? this.$props.placeholder : '',
+            placeholder: this.$props.toolbar
+              ? ""
+              : this.$props.placeholder
+                ? this.$props.placeholder
+                : "",
 
-            imageResize: {},
+            imageResize: {
+
+              modules: [ 'Resize', 'DisplaySize', 'Toolbar' ],
+
+            },
 
             theme: 'snow',  // or 'bubble'
 
@@ -122,7 +162,7 @@
 
 //              imageDrop:true,
 
-//              imageResize: {},
+              imageResize:true,
 
               toolbar: {
 
@@ -134,8 +174,33 @@
 
                     if (value) {
 
+//                        console.log(dataTime,'3333333333333333333333333')
+                      console.log(this)
+
+//                      let str = `.${touchtime}`;
+//
+//
+//                      console.log(str);
+//
+//                      document.querySelector(str).click();
+                      console.log(this.container.offsetParent.firstChild.childNodes[0].childNodes[0])
+
+                      const input = this.container.offsetParent.firstChild.childNodes[0].childNodes[0]
+
+                      input.click();
+
+
+//                      const input = this.container.offsetParent.nextSibling.nextElementSibling.childNodes[0].childNodes[0];
+
+//                        console.log(input);
+
+//                        console.log(document.querySelector(str));
+
+
+
                       // 触发input框选择图片文件
-                      document.querySelector('.avatar-uploader input').click();
+//                      document.querySelector('.avatar-uploader input').click();
+
 
                     } else {
 
@@ -168,6 +233,8 @@
 
           },
 
+          touchtime:new Date().getTime()
+
         }
 
       },
@@ -182,11 +249,11 @@
 
          if(n){
 
-//           this.content =n;
+           this.content =n;
 
 //           this.$refs.myQuillEditor.quill.setContents(this.$props.data)
 
-           this.$refs.myQuillEditor.quill.root.innerHTML=this.$props.data;
+//           this.$refs.myQuillEditor.quill.root.innerHTML=this.$props.data;
 
 
 //           this.$refs.myQuillEditor.quill.setText(this.$props.data)
@@ -195,7 +262,7 @@
 
 //           window.scrollTo(0,0);
 
-           setTimeout(() =>{
+//           setTimeout(() =>{
 
 //             this.quill.setSelection(this.quill.getLength())  // 调整光标到最后
 
@@ -203,11 +270,17 @@
 
 //             this.$refs.myQuillEditor.quill.blur();
 
-           },0);
+//           },0);
 
          };
 
-       }
+       },
+
+       value(n){
+
+         this.content = n
+
+       },
 
      },
       computed: {
@@ -232,6 +305,8 @@
 
           this.$refs.myQuillEditor.quill.enable(!flag)
 
+         this.isLook = flag;
+
        },
 
        MaxWordsFn(){
@@ -249,6 +324,8 @@
        },
 
        incidentFn(){
+
+           this.touchtime = new Date().getTime();
 
          let incident = this.$props.incident;
 
@@ -320,10 +397,26 @@
 
            return flag
 
-       }
+       },
+
+        disabledFn(){
+
+          let flag = false;
+
+          if(this.$props.disabled != undefined){
+
+            flag = true;
+
+          }
+
+          return flag
+
+        },
 
      },
       mounted(){
+
+//          console.log()
 
         this.initialize();
         //监听文字变化
@@ -363,8 +456,11 @@
           this.clickImgSrc = '';
 
         },
+
         //初始化
         initialize(){
+
+            console.log(Quill.sources.USER,'Quill.sources.USERQuill.sources.USERQuill.sources.USER')
 
           this.setOnBlur();
 
@@ -374,13 +470,13 @@
 
 //              this.$refs.myQuillEditor.quill.setText(this.$props.data)
 
-                this.$refs.myQuillEditor.quill.root.innerHTML=this.$props.data;
+            this.$refs['myQuillEditor'].quill.root.innerHTML=this.$props.data;
 
 //              this.content =this.$props.data;
 
 //            window.scrollTo(0,0);
 
-            setTimeout(() =>{
+//            setTimeout(() =>{
 
 //                this.quill.setSelection(this.quill.getLength())  // 调整光标到最后
 
@@ -388,13 +484,13 @@
 
 //                this.$refs.myQuillEditor.quill.blur();
 
-              },0)
+//            },0)
 
-            };
+          };
 
-            this.toolbarFn;
+          this.toolbarFn;
 
-            this.tipNum = this.MaxWordsFn ? this.MaxWordsFn-1 : false ;
+          this.tipNum = this.MaxWordsFn ? this.MaxWordsFn-1 : false ;
 
         },
         //input发生改变的时候
@@ -406,37 +502,45 @@
 
           try{
 
-              if(files.length){
+            if(files.length){
 
-                this.$props.upload(files,callBack =>{
-
-                  this.$Spin.hide();
-
-                  if(callBack.success && callBack.data && callBack.data.length>0){
-
-                    for(let i of callBack.data){
-
-                      let length = this.quill.getSelection().index; // 获取光标所在位置
-
-                      this.quill.insertEmbed(length, 'image',i,{"width":"100%"}); // 插入图片  res.url为服务器返回的图片地址
-
-                      this.quill.setSelection(length + 1)  // 调整光标到最后
-
-                    }
-
-                  }else{
-
-                    this.$Message.error('图片插入失败')
-
-                  }
-
-                });
-
-              }else{
+              this.$props.upload(files,callBack =>{
 
                 this.$Spin.hide();
 
-              }
+                console.log(callBack,'callBackcallBackcallBack')
+
+                if(callBack.success && callBack.data && callBack.data.length>0){
+
+                  for(let i of callBack.data){
+
+                      console.log(this.quill,'444444444444444444444444444444444444444')
+
+                      console.log(this.quill.getSelection(),'444444444444444444444444444444444444444')
+
+                    let length = this.quill.getSelection().index; // 获取光标所在位置
+
+//                    this.quill.insertEmbed(length, 'image',i,{alt:i},{"maxWidth":"200px;maxHeight:200px;"}); // 插入图片  res.url为服务器返回的图片地址
+
+                    this.quill.insertEmbed(length, 'image',i,Quill.sources.USER); // 插入图片  res.url为服务器返回的图片地址
+
+                    this.quill.setSelection(length + 1)  // 调整光标到最后
+
+                  }
+
+                }else{
+
+                  this.$Message.error('图片插入失败')
+
+                }
+
+              });
+
+            }else{
+
+              this.$Spin.hide();
+
+            }
 
           } catch (er) {
 
@@ -682,15 +786,31 @@
         //给所有imgdom绑定样式及事件
         disposeIMGMethod(){
 
-          let Img_Node = document.querySelectorAll("img");
+          let QuillWarp = document.querySelector("#QUILLWAARP");
+
+          let Img_Node = QuillWarp.querySelectorAll("img");
 
           Img_Node.forEach((i,v) =>{
 
             let _this = this;
 
-            i.style.maxWidth = "800px";
+            let style = {
 
-            i.style.maxHeight = "500PX";
+                maxWidth:200+'px',
+
+                maxHeight:200 + 'px'
+
+            };
+
+            i.setAttribute('style','max-width:200px;max-height:200px');
+
+//            i.style.maxWidth = "200px";
+//
+//            i.style.maxHeight = "200PX";
+
+//            i.style.minWidth = "200PX";
+//
+//            i.style.minHeight = "200PX";
 
             i.onclick = null;
 
@@ -700,7 +820,7 @@
 
               _this.clickImgSrc = i.currentSrc;
 
-              _this.imgClickFlag = true;;
+              _this.imgClickFlag = true;
 
             }
 
@@ -712,8 +832,25 @@
 
     }
 </script>
+<style lang="scss" scoped>
 
-<style lang="scss">
+  .mack{
+
+    width: 100%;
+
+    height: 100%;
+
+    background: #dedede;
+
+    opacity: 0.3;
+
+    position: absolute;
+
+    top:0;
+
+    left: 0;
+
+  }
 
   .quill{
 
@@ -725,7 +862,7 @@
 
     .quill_Content{
 
-      height: 95%;
+      height: 100%;
 
       .avatar-uploader{
 
@@ -735,19 +872,19 @@
 
       .quill-editor{
 
-        height: 100%;
+        height: calc( 100% - 42px);
 
         width: 100%;
 
         border-top: 1px solid #cccccc;
 
-        .ql-container{
+        /deep/ .ql-container{
 
-          height: 90%;
+          height: 91.5%;
 
         }
 
-        .ql-snow{
+        /deep/ .ql-snow{
 
           border-top: 1px solid #ccc;
 
@@ -758,11 +895,20 @@
     }
     .tip{
 
-      height: 5%;
+      height: 6%;
 
       text-align: right;
 
       color: #9cb945;
+
+      padding-right: 20px;
+
+      line-height: 30px;
+
+      border: 1px solid #ccc;
+
+      border-top: none;
+
     }
     .Quill_mask{
 
@@ -770,7 +916,7 @@
 
       height: 100%;
 
-      position:absolute;
+      position:fixed;
 
       left:0;
 
@@ -786,7 +932,7 @@
 
       align-items: center;
 
-  span{
+      span{
 
         float: right;
 
@@ -822,6 +968,12 @@
 
   }
 
+  /deep/ .ivu-modal-body{
+
+    text-align: center;
+
+  }
+
   .quill-code {
     border: none;
     height: auto;
@@ -841,6 +993,6 @@
     margin: 0 auto!important;
   }
   /*.ql-editor img{*/
-    /*max-width:90%!important;*/
+  /*max-width:90%!important;*/
   /*}*/
 </style>
