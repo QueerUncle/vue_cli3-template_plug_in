@@ -59,7 +59,7 @@
 
     </Modal>
 
-    <div class = "mack"></div>
+    <!--<div class = "mack"></div>-->
 
   </div>
 
@@ -457,41 +457,14 @@
 
         },
 
-        //初始化
-        initialize(){
-
-            console.log(Quill.sources.USER,'Quill.sources.USERQuill.sources.USERQuill.sources.USER')
-
+        initialize() {
           this.setOnBlur();
 
-          if(this.$props.data){
-
-//              this.$refs.myQuillEditor.quill.setContents(this.$props.data)
-
-//              this.$refs.myQuillEditor.quill.setText(this.$props.data)
-
-            this.$refs['myQuillEditor'].quill.root.innerHTML=this.$props.data;
-
-//              this.content =this.$props.data;
-
-//            window.scrollTo(0,0);
-
-//            setTimeout(() =>{
-
-//                this.quill.setSelection(this.quill.getLength())  // 调整光标到最后
-
-//                this.$refs.myQuillEditor.quill.enable(true);
-
-//                this.$refs.myQuillEditor.quill.blur();
-
-//            },0)
-
-          };
+          this.$refs.myQuillEditor.quill.root.innerHTML = this.$props.value ? this.$props.value : '';
 
           this.toolbarFn;
 
-          this.tipNum = this.MaxWordsFn ? this.MaxWordsFn-1 : false ;
-
+          this.tipNum = this.MaxWordsFn ? this.MaxWordsFn - 1 : false;
         },
         //input发生改变的时候
         importFile(e){
@@ -804,17 +777,31 @@
 
             i.setAttribute('style','max-width:200px;max-height:200px');
 
-//            i.style.maxWidth = "200px";
+            i.style.maxWidth = "200px";
+
+            i.style.maxHeight = "200PX";
+
+            i.style.minWidth = "200PX";
+
+            i.style.minHeight = "200PX";
+
+//            i.onclick = null;
 //
-//            i.style.maxHeight = "200PX";
-
-//            i.style.minWidth = "200PX";
+//            i.onclick = () =>{
 //
-//            i.style.minHeight = "200PX";
+//              if(_this.incidentFn && _this.incidentFn.onClickImg){ _this.$emit(_this.incidentFn.onClickImg,i.currentSrc);}
+//
+//              _this.clickImgSrc = i.currentSrc;
+//
+//              _this.imgClickFlag = true;
+//
+//            };
 
-            i.onclick = null;
+            i.dblclick = null;
 
-            i.onclick = () =>{
+            i.dblclick = () =>{
+
+                console.log(22222222222222)
 
               if(_this.incidentFn && _this.incidentFn.onClickImg){ _this.$emit(_this.incidentFn.onClickImg,i.currentSrc);}
 
@@ -860,9 +847,15 @@
 
     width: 100%;
 
+    display: flex;
+
+    flex-direction: column;
+
     .quill_Content{
 
-      height: 100%;
+      /*height: 100%;*/
+
+      flex: 2;
 
       .avatar-uploader{
 
@@ -872,30 +865,20 @@
 
       .quill-editor{
 
-        height: calc( 100% - 42px);
-
         width: 100%;
 
-        border-top: 1px solid #cccccc;
+        height: 100%;
 
-        /deep/ .ql-container{
+        display: flex;
 
-          height: 91.5%;
-
-        }
-
-        /deep/ .ql-snow{
-
-          border-top: 1px solid #ccc;
-
-        }
+        flex-direction: column;
 
       }
 
     }
     .tip{
 
-      height: 6%;
+      height: 30px;
 
       text-align: right;
 
@@ -992,7 +975,11 @@
   .ql-align-center{
     margin: 0 auto!important;
   }
-  /*.ql-editor img{*/
-  /*max-width:90%!important;*/
-  /*}*/
+  /deep/.ql-container{
+
+    height: 0;
+
+    flex: 1;
+
+  }
 </style>
