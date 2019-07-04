@@ -72,7 +72,7 @@
 
         },
 
-        props:['ExportImgUrl','ExportType','ExportFileName'],
+        props:['ExportImgUrl','ExportType','ExportFileName',"modalShow"],
 
         computed:{
 
@@ -118,7 +118,20 @@
 
             return o;
 
-          }
+          },
+          modalShowFn(){
+
+            let flag = true;
+
+            if(this.$props.modalShow!=undefined && this.$props.modalShow!=null){
+
+              flag = this.$props.modalShow
+
+            }
+
+            return flag
+
+          },
 
         },
 
@@ -212,7 +225,28 @@
 
               if(this.ExcelData!==null){
 
-                this.ExcelPopFlag = true;
+                  if(this.modalShowFn){
+
+                    this.ExcelPopFlag = true;
+
+                  }else{
+
+                    let SheetAry = [];
+
+                    let newAry = JSON.parse(JSON.stringify(this.ExportData));
+
+                    for(let i = 0; i<newAry.length;i++){
+
+                      newAry[i].bodyData.unshift(newAry[i].headData[1]);
+
+                      SheetAry.push(newAry[i].bodyData)
+
+                    }
+
+                    //不带样式
+                    this.downloadMater(SheetAry);
+
+                  }
 
               }else{
 
@@ -306,6 +340,8 @@
 
               let SheetAry = [];
 
+              console.log(this.ExportData)
+
               let newAry = JSON.parse(JSON.stringify(this.ExportData));
 
               for(let i = 0; i<newAry.length;i++){
@@ -317,10 +353,12 @@
               }
 
               //不带样式
-//              this.downloadMater(SheetAry);
+              this.downloadMater(SheetAry);
 
+
+//              console.log(SheetAry,'SheetArySheetArySheetArySheetArySheetArySheetArySheetArySheetArySheetArySheetAry')
               //带样式
-              this.downloadMaterStyle(SheetAry);
+//              this.downloadMaterStyle(SheetAry);
 
               this.ExcelPopFlag = false;
 
@@ -403,6 +441,31 @@
 
               },
 
+              border: {
+
+                top:{
+
+                  style:'thin',
+
+                },
+                right:{
+
+                  style:'thin',
+
+                },
+                bottom:{
+
+                  style:'thin',
+
+                },
+                left:{
+
+                  style:'thin',
+
+                }
+
+              },
+
               font: {
 
                 name: '宋体',
@@ -439,6 +502,31 @@
 
               },
 
+              border: {
+
+                top:{
+
+                  style:'thin',
+
+                },
+                right:{
+
+                  style:'thin',
+
+                },
+                bottom:{
+
+                  style:'thin',
+
+                },
+                left:{
+
+                  style:'thin',
+
+                },
+
+              },
+
               font: {
 
                 name:'宋体',
@@ -470,6 +558,7 @@
                 }
 
               }
+
             };
             try{
 
@@ -532,6 +621,10 @@
                   Sheet[i]["!cols"] = colsWidthAry;
 
                   Sheet[i]["!rows"] = rowHeight;
+
+                  console.log(wb);
+
+                  console.log(wopts);
 
               }
 

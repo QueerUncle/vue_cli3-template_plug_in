@@ -7,29 +7,11 @@
 
   <div class = "Excel_Import" style="overflow: hidden;height: 100%;">
 
-    <input type = "file" @change="importFile(this)" id = "imFile" style = "display: none"  accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel" />
+    <input type = "file" @change="importFile(this)" id = "imFiles" style = "display: none"  accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel" />
 
     <img style="height: 100%;width: 100%;cursor: pointer" v-if="ImportImgUrlFn!=''" :src="ImportImgUrlFn" @click = "uploadFile">
 
     <Button type="primary" v-else style="width: 100%;height: 100%;"  @click = "uploadFile" :disabled="disabled"><slot>数据导入</slot></Button>
-
-    <excel-import-pop
-
-      :ExcelData = "ExcelData"
-
-      :SheetsAry = "SheetsAry"
-
-      @cloce = "cloce"
-
-      :ExcelPopFlag = "ExcelPopFlag"
-
-      :SuccessColor = SuccessColor
-
-      :ExcelRegulation = ExcelRegulation
-
-      :ErrorColor = ErrorColor>
-
-    </excel-import-pop>
 
   </div>
 
@@ -38,8 +20,6 @@
 <script>
 
   import XLSX from 'xlsx'
-
-  import ExcelImportPop from './Pop/Excel_Import_Pop'
 
   import fs from './fs'
 
@@ -51,7 +31,7 @@
 
               ExcelPopFlag: false,
 
-              imFile: "", // 导入文件el
+              imFiles: "", // 导入文件el
 
               errorMsg: "", // 错误信息内容
 
@@ -78,12 +58,7 @@
             }
 
         },
-        components:{
-
-          ExcelImportPop
-
-        },
-        props:['excelRegDataAry','succColor','errColor','ImportImgUrl' ,"disabled","modalShow"],
+        props:['excelRegDataAry','succColor','errColor','ImportImgUrl' ,"disabled",'CallBackData'],
 
         computed:{
 
@@ -137,27 +112,13 @@
 
             return  importImgUrl;
 
-          },
-
-          modalShowFn(){
-
-              let flag = true;
-
-              if(this.$props.modalShow!=undefined && this.$props.modalShow!=null){
-
-                  flag = this.$props.modalShow
-
-              }
-
-              return flag
-
           }
 
         },
 
         mounted() {
 
-          this.imFile = document.getElementById("imFile");
+          this.imFiles = document.getElementById("imFiles");
 
         },
 
@@ -172,61 +133,7 @@
 
               if(fg!==false){
 
-                console.log('我走了这里')
-
-                let isCallBack = false;
-
-                let f = this.$emit("on-seve-click",fg,e =>{
-
-                  console.log(e,'我是混掉');
-
-                  isCallBack = true;
-
-                  let infoData = e;
-
-                  if(!infoData.success && infoData.info && infoData.info.length){
-
-                    if(infoData.info.length && this.ExcelData.length){
-
-                      infoData.info.forEach((i,v) =>{
-
-                        this.ExcelData.forEach((j,y) =>{
-
-                          if(i.sheet.split('sheet')[1]-1 == y){
-
-                            if(i.errorInfo){
-
-                              i.errorInfo.forEach((o,p) =>{
-
-                                j.tBody[o.row][o.col].color = this.errorColor;
-
-                                j.tBody[o.row][o.col].flag = false;
-
-                                j.tBody[o.row][o.col].errorInfo = o.info;
-
-                              })
-
-                            }
-
-                          }
-
-                        })
-
-                      })
-
-                    }
-
-                  }
-
-                });
-
-                if(!isCallBack){
-
-                  this.ExcelPopFlag = false;
-
-                  this.ExcelData = [];
-
-                }
+                this.$emit("on-seve-click",fg);
 
               }
 
@@ -241,7 +148,7 @@
           uploadFile(){
 
             // 点击导入按钮
-            this.imFile.click();
+            this.imFiles.click();
 
           },
           //解析xlsx
@@ -296,7 +203,7 @@
 
             let fromTo = ""; //表格范围，可用于判断表头是否数量是否正确
 
-            let obj = $t.imFile;
+            let obj = $t.imFiles;
 
             if (!obj.files) {
 
@@ -365,7 +272,7 @@
 
                 }
 
-                // 遍历每张表读取
+//                 遍历每张表读取
                 for (let sheet in workbook.Sheets) {
 
                   let sheetAry = [];
@@ -378,6 +285,8 @@
 
                       sheetAry = XLSX.utils.sheet_to_json(workbook.Sheets[sheet]);
 
+//                      sheetAry = XLSX.utils.sheet_to_html(workbook.Sheets[sheet]);
+
                     }
 
                     // break; // 如果只取第一张表，就取消注释这行
@@ -386,9 +295,27 @@
 
                   if(sheetAry.length>0){
 
-                    persons.push(sheetAry)
+                    persons.push(sheetAry);
 
                     SheetsAry.push({sheet:sheet})
+
+                  }
+
+                }
+
+                for(let i = 0 ; i< persons.length; i++){
+
+                  for(let j = 0; j<persons[i].length;j++){
+
+                      for(let p in persons[i][j]){
+
+                        if(p.indexOf('__EMPTY') > -1){
+
+                          delete persons[i][j][p]
+
+                        }
+
+                      }
 
                   }
 
@@ -397,9 +324,6 @@
                 $t.primitiveExcelData = persons;
 
                 $t.SheetsAry = SheetsAry;
-
-
-//                console.log($t.primitiveExcelData,'$t.primitiveExcelData$t.primitiveExcelData$t.primitiveExcelData')
 
                 // let json = XLSX.utils.sheet_to_json($t.wb.Sheets[$t.wb.SheetNames[0]]);
 
@@ -444,7 +368,7 @@
           //处理解析后的xlsx
           dealFile(e){
 
-            this.imFile.value = "";
+            this.imFiles.value = "";
 
             if (e.length <= 0) {
 
@@ -454,15 +378,13 @@
 
             }else{
 
-              console.log("文件解析成功，渲染中……")
+              console.log("文件解析成功，渲染中……");
 
               this.$Spin.hide();
 
               let Edata = JSON.parse(JSON.stringify(e))
 
-                this.ExcelData = fs.pluralSheerAssemblyData(Edata,this.ExcelRegulation,this.successColor,this.errorColor);
-
-              this.$store.state.ivewTableData = this.ExcelData;
+              this.ExcelData = fs.pluralSheerAssemblyDataSimple(Edata,this.ExcelRegulation,this.successColor,this.errorColor);
 
               if(this.ExcelData == "000000"){
 
@@ -480,27 +402,9 @@
 
               }
 
-              this.ExcelData[0].fileName = this.fileName;
+              console.log("文件渲染成功！");
 
-              this.ExcelData[0].fileSuffix = this.fileSuffix;
-
-              this.ExcelData[0].fileSize = this.fileSize;
-
-              this.ExcelData[0].fileType = this.fileType;
-
-              if(this.modalShowFn){
-
-                this.ExcelPopFlag = true;
-
-                this.$emit('on_excel_change',this.ExcelData);
-
-              }else{
-
-                  this.$emit('on_excel_change',this.ExcelData)
-
-              }
-
-              console.log("文件渲染成功！")
+              this.cloce(true)
 
             }
 
@@ -543,7 +447,7 @@
 
                 let headAry = JSON.parse(JSON.stringify(formattingHeadAry));
 
-                headAry[1] = this.primitiveExcelData[sheet][0]
+                headAry[1] = this.primitiveExcelData[sheet][0];
 
                 let bodyAry = Ary[sheet].tBody;
 
@@ -576,14 +480,6 @@
                       if(bodyAry[i][j].flag){
 
                         obj[bodyAry[i][j].key] = bodyAry[i][j].innerText;
-
-                      }else{
-
-                        this.$Message.error("表格中有错误数据");
-
-                        this.ExcelPopFlag = true;
-
-                        return false;
 
                       }
 

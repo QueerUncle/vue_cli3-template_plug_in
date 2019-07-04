@@ -129,19 +129,19 @@ module.exports = {
   },
   getPagesFn:() =>{
   
-    const globPathHtml = ['./src/**/index.html']; // 入口模板正则
+    const globPathHtml = ["./src/**/index.html"]; // 入口模板正则
   
-    const globPathJs = ['./src/**/main.js']; // 入口脚本正则
+    const globPathJs = ["./src/**/main.js"]; // 入口脚本正则
   
-    const splitArray = (list) =>{
+    const splitArray = list => {
     
       let newAry = [];
     
-      if(list.length>0){
+      if (list.length > 0) {
       
-        for(let entry of list){
+        for (let entry of list) {
         
-          entry = entry.substring(0,entry.lastIndexOf('/'));
+          entry = entry.substring(0, entry.lastIndexOf("/"));
         
           newAry.push(entry);
         
@@ -153,79 +153,268 @@ module.exports = {
     
     };
   
-    let pages = {};
-  
-    let confDemo = {};
-  
-    let fileHtmlList = splitArray(glob.sync(...globPathHtml));
-  
-    let fileJsList = splitArray(glob.sync(...globPathJs));
-  
-    for(let entry of fileHtmlList){
+    const WriteFileFn = (src, path, writeContent) => {
     
-      if(fileJsList.indexOf(entry)>=0){
+      fs.exists(src, publicxists => {
       
-        if(!entry.includes('demo')){
+        if (publicxists) {
         
-          let paths = entry+'/conf.json';
+          fs.writeFile(path, writeContent, "utf8", error => {
+          
+            if (error) return console.log(error);
+          
+          });
         
-          let data = JSON.parse(fs.readFileSync(paths,'utf-8'));
+        } else {
         
-          pages[data.filename] = {
+          fs.mkdir(src, err => {
           
-            entry: `${entry}/main.js`,
+            if (err) return console.error(err);
           
-            template:`${entry}/index.html`,
+            fs.writeFile(path, writeContent, "utf8", error => {
+            
+              if (error) return console.log(error);
+            
+            });
           
-            filename: `${data.filename}.html`,
-          
-            title:`${data.title}`,
-          
-          };
+          });
         
-          confDemo[data.filename] = `${data.filename}.html`;
+        }
+      
+      });
+    
+    };
+  
+    const fileExist = (filePath)=>{
+    
+      return fs.existsSync(filePath,(exist) =>{
+      
+        return exist;
+      
+      })
+    
+    };
+  
+    const uniqueArr = (arr1,arr2) =>{
+    
+      let arr3 = arr1.concat(arr2);
+    
+      let arr4 = [];
+    
+      for(let i=0,len=arr3.length; i<len; i++) {
+      
+        if(arr4.indexOf(arr3[i]) === -1) {
+        
+          arr4.push(arr3[i])
         
         }
       
       }
     
+      return arr4;
+    
     };
   
-    fs.exists('./public',(publicxists) =>{
+    let iSError = false;
+  
+    let pages = {};
+  
+    let PageDetal = "";
+  
+    let PageCount = {};
+  
+    let confDemo = {};
+  
+    let PageNameList = [];
+  
+    let CBIMPACKAGECONF = { AllPAGEAGE: false };
+  
+    let fileHtmlList = splitArray(glob.sync(...globPathHtml));
+  
+    let fileJsList = splitArray(glob.sync(...globPathJs));
+  
+    CBIMPACKAGECONF = fs.readFileSync("./src/cbim.package.conf.json", "utf-8") ? JSON.parse(fs.readFileSync("./src/cbim.package.conf.json", "utf-8")) : CBIMPACKAGECONF;
+  
+    for (let entry of fileHtmlList) {
     
-      let path = './public/RouterInfo.conf.json';
-    
-      if(publicxists){
+      if (fileJsList.indexOf(entry) >= 0) {
       
-        fs.writeFile(path,JSON.stringify({data:confDemo}),'utf8',(error) =>{
+        if (!entry.includes("demo")) {
         
-          if(error) return console.log(error);
+          let paths = entry + "/conf.json";
         
-        })
-      
-      }else{
-      
-        fs.mkdir('./public', (err) => {
-        
-          if (err) return console.error(err);
-        
-          fs.writeFile(path,JSON.stringify(confDemo),'utf8',(error) =>{
+          let data = {
           
-            if(error) return console.log(error);
+            "title": entry.split("/")[entry.split("/").length - 1],
           
-          })
+            "filename": entry.split("/")[entry.split("/").length - 1],
+          
+            "description": entry.split("/")[entry.split("/").length - 1],
+          
+            "package": true,
+          
+          };
         
-        });
+          if(fileExist(paths)){
+          
+            data = JSON.parse(fs.readFileSync(paths, "utf-8"));
+          
+          }else{
+          
+            fs.writeFile(paths, JSON.stringify(data), "utf8", error => {
+            
+              if (error) return console.log(error);
+            
+            });
+          
+          }
+        
+          if (!CBIMPACKAGECONF.AllPAGEAGE || !CBIMPACKAGECONF) {
+          
+            if (data.package == undefined) {
+            
+              data.package = true;
+            
+            }
+          
+            if ((data.package || data.package == undefined) && data.package != null) {
+            
+              if (!PageNameList.includes(data.filename)) {
+              
+                PageNameList.push(data.filename);
+              
+                pages[data.filename] = {
+                
+                  entry: `${entry}/main.js`,
+                
+                  template: `${entry}/index.html`,
+                
+                  filename: `${data.filename}.html`,
+                
+                  title: `${data.title}`
+                
+                };
+              
+                if(data.chunks && CBIMPACKAGECONF.chunks){
+                
+                  pages[data.filename].chunks = uniqueArr(data.chunks,CBIMPACKAGECONF.chunks).concat([data.filename]);
+                
+                }else{
+                
+                  if(data.chunks){
+                  
+                    pages[data.filename].chunks = data.chunks.concat([data.filename]);
+                  
+                  }else if(CBIMPACKAGECONF.chunks){
+                  
+                    pages[data.filename].chunks = CBIMPACKAGECONF.chunks.concat([data.filename])
+                  
+                  }
+                
+                }
+                confDemo[data.filename] = `${data.filename}.html`;
+              
+                PageCount[entry.split("/")[entry.split("/").length - 1]] = data;
+              
+                PageDetal += "#### " + entry.split("/")[entry.split("/").length - 1] + "：" + data.title + "\n>`\n文件名：" + data.filename + "\n`\n\n>`\n文件描述：" + data.description + "\n`\n";
+              
+              } else {
+              
+                iSError = true;
+              
+                break;
+              
+              }
+            
+            }
+          
+          } else {
+          
+            if (!PageNameList.includes(data.filename)) {
+            
+              PageNameList.push(data.filename);
+            
+              pages[data.filename] = {
+              
+                entry: `${entry}/main.js`,
+              
+                template: `${entry}/index.html`,
+              
+                filename: `${data.filename}.html`,
+              
+                title: `${data.title}`
+              
+              };
+            
+              if(data.chunks && CBIMPACKAGECONF.chunks){
+              
+                pages[data.filename].chunks = uniqueArr(data.chunks,CBIMPACKAGECONF.chunks).concat([data.filename]);
+              
+              }else{
+              
+                if(data.chunks){
+                
+                  pages[data.filename].chunks = data.chunks.concat([data.filename]);
+                
+                }else if(CBIMPACKAGECONF.chunks){
+                
+                  pages[data.filename].chunks = CBIMPACKAGECONF.chunks.concat([data.filename])
+                
+                }
+              
+              }
+            
+              confDemo[data.filename] = `${data.filename}.html`;
+            
+              PageCount[entry.split("/")[entry.split("/").length - 1]] = data;
+            
+              PageDetal += "#### " + entry.split("/")[entry.split("/").length - 1] + "：" + data.title + "\n>`\n文件名：" + data.filename + "\n`\n\n>`\n文件描述：" + data.description + "\n`\n";
+            
+            } else {
+            
+              iSError = true;
+            
+              break;
+            
+            }
+          
+          }
+        
+        }
       
       }
     
-    });
+    }
   
-    console.log(pages,'这里是单页对象');
-  
-    console.log(confDemo,'这里是配置模板');
-  
-    return pages;
+    if (iSError) {
+    
+      throw new Error("The page name is not unique");
+    
+    } else {
+    
+      let stringConfdemo = JSON.stringify({
+      
+        code: 200,
+      
+        success: true,
+      
+        message: "",
+      
+        data: confDemo
+      
+      });
+    
+      WriteFileFn("./public", "./public/RouterInfo.conf.json", stringConfdemo);
+    
+      WriteFileFn("./src/pages", "./src/pages/Page.description.md", PageDetal);
+    
+      console.log(pages, "这里是单页对象");
+    
+      console.log(confDemo, "这里是配置模板");
+    
+      return pages;
+    
+    }
     
   },
   setConfig(){

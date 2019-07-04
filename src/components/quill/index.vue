@@ -10,6 +10,7 @@
       <quill-editor
         v-model="content"
         ref="myQuillEditor"
+        style="word-break:break-all;"
         :options="editorOption"
         @blur="onEditorBlur($event,content)"
         @focus="onEditorFocus($event,content)"
@@ -110,7 +111,7 @@
 
   const Font = Quill.import('formats/font');
 
-  import { Modal,Spin } from "iview";
+  import { Modal,Spin,Message } from "iview";
 
   Font.whitelist = fonts; //将字体加入到白名单
 
@@ -240,7 +241,13 @@
       },
       components: {
 
-       quillEditor
+       quillEditor,
+
+        Message,
+
+        Modal,
+
+        Spin
 
       },
      watch:{
@@ -487,10 +494,6 @@
 
                   for(let i of callBack.data){
 
-                      console.log(this.quill,'444444444444444444444444444444444444444')
-
-                      console.log(this.quill.getSelection(),'444444444444444444444444444444444444444')
-
                     let length = this.quill.getSelection().index; // 获取光标所在位置
 
 //                    this.quill.insertEmbed(length, 'image',i,{alt:i},{"maxWidth":"200px;maxHeight:200px;"}); // 插入图片  res.url为服务器返回的图片地址
@@ -503,7 +506,7 @@
 
                 }else{
 
-                  this.$Message.error('图片插入失败')
+                  Message.error(callBack.message ? callBack.message : "图片插入失败");
 
                 }
 
