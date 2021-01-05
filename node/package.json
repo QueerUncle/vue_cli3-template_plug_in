@@ -1,6 +1,6 @@
 {
   "dependencies": {
-    "axios": "^0.18.0",
+    "axios": "^0.21.1",
     "body-parser": "^1.18.3",
     "connect-cas": "^1.8.1",
     "connect-multiparty": "^2.0.0",
